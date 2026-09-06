@@ -1,4 +1,4 @@
-#!/usr/bin/env ucode
+#!/opt/bin/ucode
 
 'use strict';
 

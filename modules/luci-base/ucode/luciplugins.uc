@@ -18,7 +18,7 @@ export function run_plugins(plugin_class_path, plugin_class_enable) {
 
 	if (uci.get('luci_plugins', 'global', 'enabled') == 1 &&
 		uci.get('luci_plugins', 'global', plugin_class_enable) == 1) {
-		const PLUGINS_PATH = '/usr/share/ucode' + plugin_class_path;
+		const PLUGINS_PATH = '/opt/share/ucode' + plugin_class_path;
 		const results = {};
 
 		for (let fn in lsdir(PLUGINS_PATH)) {

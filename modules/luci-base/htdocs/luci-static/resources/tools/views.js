@@ -95,7 +95,7 @@ var CBILogreadBox = function(logtag, name) {
 					})		
 				.catch(function (){
 					return Promise.all([
-						L.resolveDefault(fs.stat('/usr/libexec/syslog-wrapper'), null),
+						L.resolveDefault(fs.stat('/opt/libexec/syslog-wrapper'), null),
 					]).then((stat) => {
 						const logger = stat[0]?.path;
 						return fs.exec_direct(logger)

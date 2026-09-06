@@ -21,7 +21,7 @@ function shellquote(s) {
 function callPackageVersionCheck(pkg) {
 	let version = "";
 
-	if ( access('/bin/opkg') ) {
+	if ( access('/opt/bin/opkg') ) {
 		// <= v24.10
 		let fd = popen('opkg list-installed ' + shellquote(pkg) + ' 2>/dev/null');
 		if (fd) {
@@ -32,7 +32,7 @@ function callPackageVersionCheck(pkg) {
 			fd.close();
 		}
 	}
-	else if ( access('/usr/bin/apk') ) {
+	else if ( access('/opt/bin/apk') ) {
 		// > v24.10
 		let fd = popen('apk list -I ' + shellquote(pkg) + ' 2>/dev/null');
 		if (fd) {
@@ -50,7 +50,7 @@ function set_new_pwd(user, pwd) {
 	const ctx = cursor();
 	let cmd, fd, value;
 
-	cmd = sprintf('/usr/sbin/uhttpd -m %s', shellquote(pwd));
+	cmd = sprintf('/opt/sbin/uhttpd -m %s', shellquote(pwd));
 	fd = popen(cmd);
 	value = trim(fd.read('line'));
 
@@ -69,7 +69,7 @@ function check_oldpwd(user, pwd) {
 	const ctx = cursor();
 	let valid = false;
 
-	cmd = sprintf('/usr/sbin/uhttpd -m %s', shellquote(pwd));
+	cmd = sprintf('/opt/sbin/uhttpd -m %s', shellquote(pwd));
 	fd = popen(cmd);
 	value = trim(fd.read('line'));
 	fd.close();
@@ -87,7 +87,7 @@ function check_user(source, entry) {
 
 	switch (source) {
 		case 'unix': {
-			const fd = open('/etc/passwd');
+			const fd = open('/opt/etc/passwd');
 
 			for (let line = fd.read('line'); length(line); line = fd.read('line')) {
 				let user = split(line, /:/)[0];
@@ -149,7 +149,7 @@ const methods = {
 
 			if (t) {
 				system(sprintf('date -s "%04d-%02d-%02d %02d:%02d:%02d" >/dev/null', t.year, t.mon, t.mday, t.hour, t.min, t.sec));
-				system('/etc/init.d/sysfixtime restart >/dev/null');
+				system('/opt/etc/init.d/sysfixtime restart >/dev/null');
 			}
 
 			return { result: request.args.localtime };
@@ -158,7 +158,7 @@ const methods = {
 
 	getTimezones: {
 		call: function(request) {
-			let tz = trim(readfile('/etc/TZ'));
+			let tz = trim(readfile('/opt/etc/TZ'));
 			let zn = cursor()?.get?.('system', '@system[0]', 'zonename');
 			let result = {};
 
@@ -238,9 +238,9 @@ const methods = {
 			let helpers = [];
 			let package;
 
-			if (uci.load('/usr/share/firewall4/helpers'))
+			if (uci.load('/opt/share/firewall4/helpers'))
 				package = 'helpers';
-			else if (uci.load('/usr/share/fw3/helpers.conf'))
+			else if (uci.load('/opt/share/fw3/helpers.conf'))
 				package = 'helpers.conf';
 
 			if (package) {
@@ -263,22 +263,22 @@ const methods = {
 	getFeatures: {
 		call: function() {
 			let result = {
-				firewall:   access('/sbin/fw3') == true,
-				firewall4:  access('/sbin/fw4') == true,
-				opkg:       access('/bin/opkg') == true,
+				firewall:   access('/opt/sbin/fw3') == true,
+				firewall4:  access('/opt/sbin/fw4') == true,
+				opkg:       access('/opt/bin/opkg') == true,
 				bonding:    access('/sys/module/bonding'),
-				mii_tool:   access('/usr/sbin/mii-tool'),
+				mii_tool:   access('/opt/sbin/mii-tool'),
 				offloading: access('/sys/module/xt_FLOWOFFLOAD/refcnt') == true || access('/sys/module/nft_flow_offload/refcnt') == true,
-				br2684ctl:  access('/usr/sbin/br2684ctl') == true,
-				swconfig:   access('/sbin/swconfig') == true,
+				br2684ctl:  access('/opt/sbin/br2684ctl') == true,
+				swconfig:   access('/opt/sbin/swconfig') == true,
 				zram:       access('/sys/class/zram-control') == true,
-				sysntpd:    readlink('/usr/sbin/ntpd') != null,
+				sysntpd:    readlink('/opt/sbin/ntpd') != null,
 				ipv6:       access('/proc/net/ipv6_route') == true,
-				dropbear:   access('/usr/sbin/dropbear') == true,
-				cabundle:   access('/etc/ssl/certs/ca-certificates.crt') == true,
-				relayd:     access('/usr/sbin/relayd') == true,
-				apk:        access('/usr/bin/apk') == true,
-				wifi:       access('/sbin/wifi') == true,
+				dropbear:   access('/opt/sbin/dropbear') == true,
+				cabundle:   access('/opt/etc/ssl/certs/ca-certificates.crt') == true,
+				relayd:     access('/opt/sbin/relayd') == true,
+				apk:        access('/opt/bin/apk') == true,
+				wifi:       access('/opt/sbin/wifi') == true,
 				vrf:        access('/sys/module/vrf/refcnt') == true, // vrf.ko is loaded
 				netifd_vrf: false,
 				mptcp:      access('/proc/sys/net/mptcp/enabled'),
@@ -300,18 +300,18 @@ const methods = {
 				'wps',
 			];
 
-			if (access('/usr/sbin/hostapd')) {
-				result.hostapd = { cli: access('/usr/sbin/hostapd_cli') == true };
+			if (access('/opt/sbin/hostapd')) {
+				result.hostapd = { cli: access('/opt/sbin/hostapd_cli') == true };
 
 				for (let feature in wifi_features)
-					result.hostapd[feature] = system(`/usr/sbin/hostapd -v${feature} >/dev/null 2>/dev/null`) == 0;
+					result.hostapd[feature] = system(`/opt/sbin/hostapd -v${feature} >/dev/null 2>/dev/null`) == 0;
 			}
 
-			if (access('/usr/sbin/wpa_supplicant')) {
-				result.wpasupplicant = { cli: access('/usr/sbin/wpa_cli') == true };
+			if (access('/opt/sbin/wpa_supplicant')) {
+				result.wpasupplicant = { cli: access('/opt/sbin/wpa_cli') == true };
 
 				for (let feature in wifi_features)
-					result.wpasupplicant[feature] = system(`/usr/sbin/wpa_supplicant -v${feature} >/dev/null 2>/dev/null`) == 0;
+					result.wpasupplicant[feature] = system(`/opt/sbin/wpa_supplicant -v${feature} >/dev/null 2>/dev/null`) == 0;
 			}
 
 			let fd = popen('dnsmasq --version 2>/dev/null');
@@ -372,8 +372,8 @@ const methods = {
 			}
 
 			result.ufpd = false;
-			if (access('/usr/sbin/ufpd')) {
-				result.ufpd = system(`/etc/init.d/ufp running >/dev/null 2>/dev/null`) == 0
+			if (access('/opt/sbin/ufpd')) {
+				result.ufpd = system(`/opt/etc/init.d/ufp running >/dev/null 2>/dev/null`) == 0
 			}
 
 			return result;
@@ -528,11 +528,11 @@ const methods = {
 				const p = shellquote(pwd);
 
 				return {
-					result: system(`(echo ${p}; sleep 1; echo ${p}) | /bin/busybox passwd ${u} >/dev/null 2>&1`) == 0
+					result: system(`(echo ${p}; sleep 1; echo ${p}) | /opt/bin/busybox passwd ${u} >/dev/null 2>&1`) == 0
 				};
 			}
 
-			if (!access('/usr/sbin/uhttpd', 'x'))
+			if (!access('/opt/sbin/uhttpd', 'x'))
 				return { 
 					result: 0 ,
 					msg: "uhttpd not installed"
@@ -566,7 +566,7 @@ const methods = {
 
 	getBlockDevices: {
 		call: function() {
-			const block = popen('/sbin/block info 2>/dev/null');
+			const block = popen('/opt/sbin/block info 2>/dev/null');
 
 			if (block) {
 				let result = {};
@@ -617,7 +617,7 @@ const methods = {
 
 	setBlockDetect: {
 		call: function() {
-			return { result: system('/sbin/block detect > /etc/config/fstab') == 0 };
+			return { result: system('/opt/sbin/block detect > /opt/etc/uci-config/fstab') == 0 };
 		}
 	},
 
@@ -704,7 +704,7 @@ const methods = {
 
 	getBuiltinEthernetPorts: {
 		call: function() {
-			let fd = open('/etc/board.json', 'r');
+			let fd = open('/opt/etc/board.json', 'r');
 			let board = fd ? json(fd) : {};
 			let ports = [];
 
