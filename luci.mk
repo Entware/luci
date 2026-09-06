@@ -14,9 +14,9 @@ LUCI_SECTION?=luci
 LUCI_CATEGORY?=LuCI
 LUCI_URL?=https://github.com/openwrt/luci
 LUCI_MAINTAINER?=OpenWrt LuCI community
-LUCI_MINIFY_LUA?=1
-LUCI_MINIFY_CSS?=1
-LUCI_MINIFY_JS?=1
+LUCI_MINIFY_LUA?=0
+LUCI_MINIFY_CSS?=0
+LUCI_MINIFY_JS?=0
 
 #LUCI_LANG_START
 LUCI_LANG.ar=العربية (Arabic)
@@ -114,7 +114,8 @@ endef
 PKG_NAME?=$(LUCI_NAME)
 PKG_RELEASE?=1
 PKG_INSTALL:=$(if $(realpath src/Makefile),1)
-PKG_BUILD_DEPENDS += lua/host luci-base/host LUCI_CSSTIDY:csstidy/host LUCI_SRCDIET:luasrcdiet/host $(LUCI_BUILD_DEPENDS)
+# SRCDIET needs lua/host (dropped, no-Lua fork); CSSTIDY's host package exists but isn't wired back in; JSMIN needs no deps, off just to match.
+PKG_BUILD_DEPENDS += luci-base/host $(LUCI_BUILD_DEPENDS)
 PKG_CONFIG_DEPENDS += CONFIG_LUCI_SRCDIET CONFIG_LUCI_JSMIN CONFIG_LUCI_CSSTIDY
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
@@ -308,11 +309,11 @@ ifeq ($(PKG_NAME),luci-base)
 
    config LUCI_JSMIN
 	bool "Minify JavaScript sources"
-	default y
+	default n
 
    config LUCI_CSSTIDY
 	bool "Minify CSS files"
-	default y
+	default n
 
    menu "Translations"$(foreach lang,$(LUCI_LANGUAGES),$(if $(LUCI_LANG.$(lang)),
 
