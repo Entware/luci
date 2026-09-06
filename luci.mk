@@ -80,10 +80,10 @@ LUCI_LC_ALIAS.zh_Hans=zh-cn
 LUCI_LC_ALIAS.zh_Hant=zh-tw
 
 # Default locations
-HTDOCS = /www
-LUA_LIBRARYDIR = /usr/lib/lua
+HTDOCS = /opt/www
+LUA_LIBRARYDIR = /opt/lib/lua
 LUCI_LIBRARYDIR = $(LUA_LIBRARYDIR)/luci
-UCODE_LIBRARYDIR = /usr/share/ucode/luci
+UCODE_LIBRARYDIR = /opt/share/ucode/luci
 
 
 # 1: everything expect po subdir or only po subdir
@@ -224,8 +224,8 @@ define Package/$(PKG_NAME)/install
 	$(if $(CONFIG_LUCI_CSSTIDY),$(call CssTidy,$(1)$(HTDOCS)/),true)
  endif
  ifneq ($(wildcard ${CURDIR}/root),)
-	$(INSTALL_DIR) $(1)/
-	cp -pR $(PKG_BUILD_DIR)/root/* $(1)/
+	$(INSTALL_DIR) $(1)/opt
+	cp -pR $(PKG_BUILD_DIR)/root/* $(1)/opt/
  endif
  ifneq ($(wildcard ${CURDIR}/src),)
 	$(call Build/Install/Default)
@@ -235,10 +235,12 @@ endef
 
 ifndef Package/$(PKG_NAME)/postinst
 define Package/$(PKG_NAME)/postinst
+#!/bin/sh
 [ -n "$${IPKG_INSTROOT}" ] || { \
+	[ -f /opt/lib/config/uci.sh ] && { . /opt/lib/config/uci.sh; uci_apply_defaults; }
 	rm -f /tmp/luci-indexcache.*
 	rm -rf /tmp/luci-modulecache/
-	/etc/init.d/rpcd reload 2>/dev/null
+	/opt/etc/init.d/S50rpcd reconfigure 2>/dev/null
 	exit 0
 }
 endef
@@ -343,13 +345,19 @@ define LuciTranslation
   endef
 
   define Package/luci-i18n-$(LUCI_BASENAME)-$(1)/install
-	$$(INSTALL_DIR) $$(1)/etc/uci-defaults
+	$$(INSTALL_DIR) $$(1)/opt/etc/uci-defaults
 	echo "uci set luci.languages.$(subst -,_,$(1))='$(LUCI_LANG.$(2))'; uci commit luci" \
-		> $$(1)/etc/uci-defaults/luci-i18n-$(LUCI_BASENAME)-$(1)
+		> $$(1)/opt/etc/uci-defaults/luci-i18n-$(LUCI_BASENAME)-$(1)
 	$$(INSTALL_DIR) $$(1)$(LUCI_LIBRARYDIR)/i18n
 	$(foreach po,$(wildcard ${CURDIR}/po/$(2)/*.po), \
 		po2lmo $(po) \
 			$$(1)$(LUCI_LIBRARYDIR)/i18n/$(basename $(notdir $(po))).$(1).lmo;)
+  endef
+
+  define Package/luci-i18n-$(LUCI_BASENAME)-$(1)/postinst
+#!/bin/sh
+[ -n "$$$${IPKG_INSTROOT}" ] || { . /opt/lib/config/uci.sh; uci_apply_defaults; }
+exit 0
   endef
 
   LUCI_BUILD_PACKAGES += luci-i18n-$(LUCI_BASENAME)-$(1)
