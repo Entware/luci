@@ -16,7 +16,7 @@ return view.extend({
 	},
 
 	handleSignal: function(signum, pid, ev) {
-		return fs.exec('/bin/kill', ['-%d'.format(signum), '%s'.format(pid)]).then(L.bind(function() {
+		return fs.exec('/opt/bin/kill', ['-%d'.format(signum), '%s'.format(pid)]).then(L.bind(function() {
 			return callLuciProcessList().then(L.bind(function(processes) {
 				this.updateTable('.table', processes);
 			}, this));

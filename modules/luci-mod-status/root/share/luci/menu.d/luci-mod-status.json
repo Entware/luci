@@ -21,7 +21,7 @@
 		"depends": {
 			"acl": [ "luci-mod-status-routes" ],
 			"fs": [
-				{ "/usr/libexec/ip-tiny": "absent", "/usr/libexec/ip-full": "absent" }
+				{ "/opt/libexec/ip-tiny": "absent", "/opt/libexec/ip-full": "absent" }
 			]
 
 		}
@@ -37,8 +37,8 @@
 		"depends": {
 			"acl": [ "luci-mod-status-routes-json" ],
 			"fs": [
-				{ "/usr/libexec/ip-tiny": "executable" },
-				{ "/usr/libexec/ip-full": "executable" }
+				{ "/opt/libexec/ip-tiny": "executable" },
+				{ "/opt/libexec/ip-full": "executable" }
 			]
 
 		}
@@ -54,8 +54,8 @@
 		"depends": {
 			"acl": [ "luci-mod-status-firewall" ],
 			"fs": [
-				{ "/usr/sbin/nft": "absent", "/usr/sbin/iptables": "executable" },
-				{ "/usr/sbin/nft": "absent", "/usr/sbin/ip6tables": "executable" }
+				{ "/opt/sbin/nft": "absent", "/opt/sbin/iptables": "executable" },
+				{ "/opt/sbin/nft": "absent", "/opt/sbin/ip6tables": "executable" }
 			]
 		}
 	},
@@ -69,7 +69,7 @@
 		},
 		"depends": {
 			"acl": [ "luci-mod-status-firewall" ],
-			"fs": { "/usr/sbin/nft": "executable" }
+			"fs": { "/opt/sbin/nft": "executable" }
 		}
 	},
 
@@ -85,7 +85,7 @@
 		"order": 4,
 		"action": {
 			"type": "alias",
-			"path": "admin/status/logs/syslog"
+			"path": "admin/status/logs/dmesg"
 		},
 		"depends": {
 			"acl": [ "luci-mod-status-logs" ]
@@ -98,6 +98,9 @@
 		"action": {
 			"type": "view",
 			"path": "status/syslog"
+		},
+		"depends": {
+			"acl": [ "DISABLED_FOR_ENTWARE", "luci-mod-status-logs" ]
 		}
 	},
 
@@ -130,7 +133,7 @@
 			"path": "status/channel_analysis"
 		},
 		"depends": {
-			"acl": [ "luci-mod-status-channel_analysis" ],
+			"acl": [ "DISABLED_FOR_ENTWARE", "luci-mod-status-channel_analysis" ],
 			"uci": { "wireless": { "@wifi-device": true } }
 		}
 	},
@@ -143,7 +146,7 @@
 			"path": "admin/status/realtime/load"
 		},
 		"depends": {
-			"acl": [ "luci-mod-status-realtime" ]
+			"acl": [ "DISABLED_FOR_ENTWARE", "luci-mod-status-realtime" ]
 		}
 	},
 
@@ -173,6 +176,7 @@
 			"path": "status/wireless"
 		},
 		"depends": {
+			"acl": [ "DISABLED_FOR_ENTWARE" ],
 			"uci": { "wireless": { "@wifi-device": true } }
 		}
 	},

@@ -97,7 +97,7 @@ return view.extend({
 	},
 
 	load: function() {
-		return L.resolveDefault(fs.list('/www' + L.resource('view/status/include')), []).then(function(entries) {
+		return L.resolveDefault(fs.list('/opt/www' + L.resource('view/status/include')), []).then(function(entries) {
 			return Promise.all(entries.filter(function(e) {
 				return (e.type == 'file' && e.name.match(/\.js$/));
 			}).map(function(e) {

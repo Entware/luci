@@ -160,16 +160,16 @@ return view.extend({
 
 	load() {
 		return Promise.all([
-			L.resolveDefault(fs.exec_direct('/usr/sbin/nft', ['--terse', '--json', 'list', 'ruleset'], 'json'), {}),
-			fs.stat('/usr/sbin/iptables-legacy-save').then(function() {
-				return L.resolveDefault(fs.exec_direct('/usr/sbin/iptables-legacy-save'), '');
+			L.resolveDefault(fs.exec_direct('/opt/sbin/nft', ['--terse', '--json', 'list', 'ruleset'], 'json'), {}),
+			fs.stat('/opt/sbin/iptables-legacy-save').then(function() {
+				return L.resolveDefault(fs.exec_direct('/opt/sbin/iptables-legacy-save'), '');
 			}).catch(function() {
-				return L.resolveDefault(fs.exec_direct('/usr/sbin/iptables-save'), '');
+				return L.resolveDefault(fs.exec_direct('/opt/sbin/iptables-save'), '');
 			}),
-			fs.stat('/usr/sbin/ip6tables-legacy-save').then(function() {
-				return L.resolveDefault(fs.exec_direct('/usr/sbin/ip6tables-legacy-save'), '');
+			fs.stat('/opt/sbin/ip6tables-legacy-save').then(function() {
+				return L.resolveDefault(fs.exec_direct('/opt/sbin/ip6tables-legacy-save'), '');
 			}).catch(function() {
-				return L.resolveDefault(fs.exec_direct('/usr/sbin/ip6tables-save'), '');
+				return L.resolveDefault(fs.exec_direct('/opt/sbin/ip6tables-save'), '');
 			})
 		]);
 	},

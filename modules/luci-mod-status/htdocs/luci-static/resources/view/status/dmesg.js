@@ -36,7 +36,7 @@ return view.extend({
 	],
 
 	async retrieveLog() {
-		return fs.exec_direct('/bin/dmesg', [ '-r' ]).then(logdata => {
+		return fs.exec_direct('/opt/bin/dmesg', [ '-r' ]).then(logdata => {
 			let loglines = [];
 			let lastSeverity = null;
 			let lastTime = null;

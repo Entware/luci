@@ -3,7 +3,7 @@
 		"description": "Grant access to realtime statistics",
 		"read": {
 			"file": {
-				"/etc/services": [ "read" ]
+				"/opt/etc/services": [ "read" ]
 			},
 			"ubus": {
 				"luci": [ "getConntrackList", "getRealtimeStats" ],
@@ -22,7 +22,7 @@
 		},
 		"write": {
 			"file": {
-				"/bin/kill": [ "exec" ]
+				"/opt/bin/kill": [ "exec" ]
 			},
 			"ubus": {
 				"file": [ "exec" ]
@@ -35,8 +35,8 @@
 		"read": {
 			"cgi-io": [ "exec" ],
 			"file": {
-				"/bin/dmesg -r": [ "exec" ],
-				"/usr/libexec/syslog-wrapper": [ "exec" ]
+				"/opt/bin/dmesg -r": [ "exec" ],
+				"/opt/libexec/syslog-wrapper": [ "exec" ]
 			},
 			"ubus": {
 				"log": [ "read" ],
@@ -49,9 +49,9 @@
 		"description": "Grant access to routing status",
 		"read": {
 			"file": {
-				"/sbin/ip -[46] neigh show": [ "exec" ],
-				"/sbin/ip -[46] route show table all": [ "exec" ],
-				"/sbin/ip -[46] rule show": [ "exec" ]
+				"/opt/sbin/ip -[46] neigh show": [ "exec" ],
+				"/opt/sbin/ip -[46] route show table all": [ "exec" ],
+				"/opt/sbin/ip -[46] rule show": [ "exec" ]
 			},
 			"ubus": {
 				"file": [ "exec" ],
@@ -64,9 +64,9 @@
 		"description": "Grant access to routing status",
 		"read": {
 			"file": {
-				"/sbin/ip -[46] -j neigh show": [ "exec" ],
-				"/sbin/ip -[46] -j route show table all": [ "exec" ],
-				"/sbin/ip -[46] -j rule show": [ "exec" ]
+				"/opt/sbin/ip -[46] -j neigh show": [ "exec" ],
+				"/opt/sbin/ip -[46] -j route show table all": [ "exec" ],
+				"/opt/sbin/ip -[46] -j rule show": [ "exec" ]
 			},
 			"ubus": {
 				"file": [ "exec" ],
@@ -89,12 +89,12 @@
 		"read": {
 			"cgi-io": [ "exec" ],
 			"file": {
-				"/usr/sbin/nft --terse --json list ruleset": [ "exec" ],
-				"/usr/sbin/iptables --line-numbers -w -nvxL -t *": [ "exec" ],
-				"/usr/sbin/ip6tables --line-numbers -w -nvxL -t *": [ "exec" ],
-				"/usr/sbin/ip6tables": [ "list" ],
-				"/usr/sbin/iptables-save": [ "exec" ],
-				"/usr/sbin/ip6tables-save": [ "exec" ]
+				"/opt/sbin/nft --terse --json list ruleset": [ "exec" ],
+				"/opt/sbin/iptables --line-numbers -w -nvxL -t *": [ "exec" ],
+				"/opt/sbin/ip6tables --line-numbers -w -nvxL -t *": [ "exec" ],
+				"/opt/sbin/ip6tables": [ "list" ],
+				"/opt/sbin/iptables-save": [ "exec" ],
+				"/opt/sbin/ip6tables-save": [ "exec" ]
 			},
 			"ubus": {
 				"file": [ "stat" ]
@@ -103,9 +103,9 @@
 		"write": {
 			"cgi-io": [ "exec" ],
 			"file": {
-				"/etc/init.d/firewall restart": [ "exec" ],
-				"/usr/sbin/iptables -Z": [ "exec" ],
-				"/usr/sbin/ip6tables -Z": [ "exec" ]
+				"/opt/etc/init.d/firewall restart": [ "exec" ],
+				"/opt/sbin/iptables -Z": [ "exec" ],
+				"/opt/sbin/ip6tables -Z": [ "exec" ]
 			},
 			"ubus": {
 				"file": [ "exec" ]

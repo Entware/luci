@@ -39,12 +39,12 @@ return view.extend({
 	load() {
 		return Promise.all([
 			callNetworkInterfaceDump(),
-			L.resolveDefault(fs.exec('/sbin/ip', [ '-4', 'neigh', 'show' ]), { stdout: '' }),
-			L.resolveDefault(fs.exec('/sbin/ip', [ '-4', 'route', 'show', 'table', 'all' ]), { stdout: '' }),
-			L.resolveDefault(fs.exec('/sbin/ip', [ '-4', 'rule', 'show' ]), { stdout: '' }),
-			L.resolveDefault(fs.exec('/sbin/ip', [ '-6', 'neigh', 'show' ]), { stdout: '' }),
-			L.resolveDefault(fs.exec('/sbin/ip', [ '-6', 'route', 'show', 'table', 'all' ]), { stdout: '' }),
-			L.resolveDefault(fs.exec('/sbin/ip', [ '-6', 'rule', 'show' ]), { stdout: '' }),
+			L.resolveDefault(fs.exec('/opt/sbin/ip', [ '-4', 'neigh', 'show' ]), { stdout: '' }),
+			L.resolveDefault(fs.exec('/opt/sbin/ip', [ '-4', 'route', 'show', 'table', 'all' ]), { stdout: '' }),
+			L.resolveDefault(fs.exec('/opt/sbin/ip', [ '-4', 'rule', 'show' ]), { stdout: '' }),
+			L.resolveDefault(fs.exec('/opt/sbin/ip', [ '-6', 'neigh', 'show' ]), { stdout: '' }),
+			L.resolveDefault(fs.exec('/opt/sbin/ip', [ '-6', 'route', 'show', 'table', 'all' ]), { stdout: '' }),
+			L.resolveDefault(fs.exec('/opt/sbin/ip', [ '-6', 'rule', 'show' ]), { stdout: '' }),
 			L.hasSystemFeature('ufpd') ? callUfpList() : null
 		]);
 	},
