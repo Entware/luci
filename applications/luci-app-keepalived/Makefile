@@ -9,7 +9,7 @@ PKG_LICENSE:=GPL-2.0-or-later
 PKG_MAINTAINER:=Jaymin Patel <jem.patel@gmail.com>
 
 LUCI_TITLE:=LuCI support for the Keepalived
-LUCI_DEPENDS:=+luci-base +keepalived +keepalived-sync
+LUCI_DEPENDS:=+luci-base +keepalived-sync @BROKEN
 
 include ../../luci.mk
 
