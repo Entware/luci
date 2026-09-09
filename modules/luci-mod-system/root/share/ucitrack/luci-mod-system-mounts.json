@@ -1,0 +1,4 @@
+{
+	"config": "fstab",
+	"exec": "/opt/sbin/block mount"
+}

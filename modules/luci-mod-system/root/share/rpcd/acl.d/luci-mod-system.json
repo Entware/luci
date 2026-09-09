@@ -4,7 +4,7 @@
 		"read": {
 			"cgi-io": [ "read" ],
 			"file": {
-				"/etc/passwd": [ "read" ]
+				"/opt/etc/passwd": [ "read" ]
 			},
 			"ubus": {
 				"luci": [ "getLEDs", "getTimezones", "getUSBDevices", "getUnixtime" ],
@@ -14,7 +14,7 @@
 		},
 		"write": {
 			"file": {
-				"/usr/sbin/uhttpd -m *": [ "exec" ]
+				"/opt/sbin/uhttpd -m *": [ "exec" ]
 			},
 			"ubus": {
 				"luci": [ "setLocaltime", "setPassword" ],
@@ -28,7 +28,7 @@
 		"description": "Grant access to SSH configuration",
 		"read": {
 			"file": {
-				"/etc/dropbear/authorized_keys": [ "read" ]
+				"/opt/etc/dropbear/authorized_keys": [ "read" ]
 			},
 			"ubus": {
 				"file": [ "read" ]
@@ -37,7 +37,7 @@
 		},
 		"write": {
 			"file": {
-				"/etc/dropbear/authorized_keys": [ "write" ]
+				"/opt/etc/dropbear/authorized_keys": [ "write" ]
 			},
 			"ubus": {
 				"file": [ "write" ],
@@ -51,14 +51,14 @@
 		"description": "Grant access to Software Repository Public Key management",
 		"read": {
 			"file": {
-				"/etc/opkg/keys/*": [ "read" ],
-				"/etc/apk/keys/*": [ "read" ]
+				"/opt/etc/opkg/keys/*": [ "read" ],
+				"/opt/etc/apk/keys/*": [ "read" ]
 			}
 		},
 		"write": {
 			"file": {
-				"/etc/opkg/keys/*": [ "write" ],
-				"/etc/apk/keys/*": [ "write" ]
+				"/opt/etc/opkg/keys/*": [ "write" ],
+				"/opt/etc/apk/keys/*": [ "write" ]
 			}
 		}
 	},
@@ -67,9 +67,9 @@
 		"description": "Grant access to Plugin management",
 		"read": {
 			"file": {
-				"/usr/share/ucode/luci/*": [ "read" ],
-				"/www/luci-static/resources/view/plugins": [ "list" ],
-				"/www/luci-static/resources/view/plugins/*": [ "read" ]
+				"/opt/share/ucode/luci/*": [ "read" ],
+				"/opt/www/luci-static/resources/view/plugins": [ "list" ],
+				"/opt/www/luci-static/resources/view/plugins/*": [ "read" ]
 			},
 			"uci": [ "luci_plugins" ]
 		},
@@ -93,20 +93,19 @@
 		"description": "Grant access to startup configuration",
 		"read": {
 			"file": {
-				"/etc/rc.local": [ "read" ]
+				"/opt/etc/init.d": [ "list" ]
 			},
 			"ubus": {
-				"file": [ "read" ],
-				"rc": [ "list" ]
+				"file": [ "list" ]
 			}
 		},
 		"write": {
 			"file": {
-				"/etc/rc.local": [ "write" ]
+				"/opt/etc/init.d/*": [ "exec" ],
+				"/opt/bin/chmod": [ "exec" ]
 			},
 			"ubus": {
-				"file": [ "write" ],
-				"rc": [ "init" ]
+				"file": [ "exec" ]
 			}
 		}
 	},
@@ -115,7 +114,7 @@
 		"description": "Grant access to crontab configuration",
 		"read": {
 			"file": {
-				"/etc/crontabs/root": [ "read" ]
+				"/opt/etc/cron.d/root": [ "read" ]
 			},
 			"ubus": {
 				"file": [ "read" ]
@@ -123,11 +122,11 @@
 		},
 		"write": {
 			"file": {
-				"/etc/crontabs/root": [ "write" ],
-				"/etc/init.d/cron reload": [ "exec" ]
+				"/opt/etc/cron.d/root": [ "write" ],
+				"/opt/etc/init.d/S10cron": [ "exec" ]
 			},
 			"ubus": {
-				"file": [ "write" ]
+				"file": [ "write", "exec" ]
 			}
 		}
 	},
@@ -136,13 +135,13 @@
 		"description": "Grant access to mount configuration",
 		"read": {
 			"file": {
-				"/etc/filesystems": [ "read" ],
+				"/opt/etc/filesystems": [ "read" ],
 				"/proc/filesystems": [ "read" ],
-				"/usr/bin/btrfsck": [ "list" ],
-				"/usr/bin/ntfsfix": [ "list" ],
-				"/usr/sbin/e2fsck": [ "list" ],
-				"/usr/sbin/fsck.f2fs": [ "list" ],
-				"/usr/sbin/fsck.fat": [ "list" ]
+				"/opt/bin/btrfsck": [ "list" ],
+				"/opt/bin/ntfsfix": [ "list" ],
+				"/opt/sbin/e2fsck": [ "list" ],
+				"/opt/sbin/fsck.f2fs": [ "list" ],
+				"/opt/sbin/fsck.fat": [ "list" ]
 			},
 			"ubus": {
 				"file": [ "read", "stat" ],
@@ -152,8 +151,8 @@
 		},
 		"write": {
 			"file": {
-				"/bin/umount": [ "exec" ],
-				"/sbin/block": [ "exec" ]
+				"/opt/bin/umount": [ "exec" ],
+				"/opt/sbin/block": [ "exec" ]
 			},
 			"ubus": {
 				"file": [ "exec", "write" ],
@@ -169,14 +168,14 @@
 			"cgi-io": [ "backup", "download" ],
 			"file": {
 				"/dev/mtdblock[0-9]*": [ "read" ],
-				"/etc/sysupgrade.conf": [ "read" ],
-				"/lib/upgrade/platform.sh": [ "list" ],
+				"/opt/etc/sysupgrade.conf": [ "read" ],
+				"/opt/lib/upgrade/platform.sh": [ "list" ],
 				"/proc/mounts": [ "read" ],
 				"/proc/*/mounts": [ "read" ],
 				"/proc/mtd": [ "read" ],
 				"/proc/partitions": [ "read" ],
 				"/proc/sys/kernel/hostname": [ "read" ],
-				"/sbin/sysupgrade --list-backup": [ "exec" ]
+				"/opt/sbin/sysupgrade --list-backup": [ "exec" ]
 			},
 			"ubus": {
 				"file": [ "exec", "read", "stat" ]
@@ -185,22 +184,22 @@
 		"write": {
 			"cgi-io": [ "upload" ],
 			"file": {
-				"/bin/tar -tzf /tmp/backup.tar.gz": [ "exec" ],
-				"/etc/sysupgrade.conf": [ "write" ],
-				"/sbin/firstboot -r -y": [ "exec" ],
-				"/sbin/reboot": [ "exec" ],
-				"/sbin/sysupgrade --force /tmp/firmware.bin": [ "exec" ],
-				"/sbin/sysupgrade -n --force /tmp/firmware.bin": [ "exec" ],
-				"/sbin/sysupgrade --force -k /tmp/firmware.bin": [ "exec" ],
-				"/sbin/sysupgrade --force -u /tmp/firmware.bin": [ "exec" ],
-				"/sbin/sysupgrade --force -u -k /tmp/firmware.bin": [ "exec" ],
-				"/sbin/sysupgrade -n /tmp/firmware.bin": [ "exec" ],
-				"/sbin/sysupgrade -k /tmp/firmware.bin": [ "exec" ],
-				"/sbin/sysupgrade -u /tmp/firmware.bin": [ "exec" ],
-				"/sbin/sysupgrade -u -k /tmp/firmware.bin": [ "exec" ],
-				"/sbin/sysupgrade --restore-backup /tmp/backup.tar.gz": [ "exec" ],
-				"/sbin/sysupgrade --test /tmp/firmware.bin": [ "exec" ],
-				"/sbin/sysupgrade /tmp/firmware.bin": [ "exec" ],
+				"/opt/bin/tar -tzf /tmp/backup.tar.gz": [ "exec" ],
+				"/opt/etc/sysupgrade.conf": [ "write" ],
+				"/opt/sbin/firstboot -r -y": [ "exec" ],
+				"/opt/sbin/reboot": [ "exec" ],
+				"/opt/sbin/sysupgrade --force /tmp/firmware.bin": [ "exec" ],
+				"/opt/sbin/sysupgrade -n --force /tmp/firmware.bin": [ "exec" ],
+				"/opt/sbin/sysupgrade --force -k /tmp/firmware.bin": [ "exec" ],
+				"/opt/sbin/sysupgrade --force -u /tmp/firmware.bin": [ "exec" ],
+				"/opt/sbin/sysupgrade --force -u -k /tmp/firmware.bin": [ "exec" ],
+				"/opt/sbin/sysupgrade -n /tmp/firmware.bin": [ "exec" ],
+				"/opt/sbin/sysupgrade -k /tmp/firmware.bin": [ "exec" ],
+				"/opt/sbin/sysupgrade -u /tmp/firmware.bin": [ "exec" ],
+				"/opt/sbin/sysupgrade -u -k /tmp/firmware.bin": [ "exec" ],
+				"/opt/sbin/sysupgrade --restore-backup /tmp/backup.tar.gz": [ "exec" ],
+				"/opt/sbin/sysupgrade --test /tmp/firmware.bin": [ "exec" ],
+				"/opt/sbin/sysupgrade /tmp/firmware.bin": [ "exec" ],
 				"/tmp/backup.tar.gz": [ "write" ],
 				"/tmp/firmware.bin": [ "write" ]
 			},
@@ -215,7 +214,7 @@
 		"description": "Allow rebooting the device",
 		"write": {
 			"file": {
-				"/sbin/reboot": [ "exec" ]
+				"/opt/sbin/reboot": [ "exec" ]
 			},
 			"ubus": {
 				"file": [ "exec" ],

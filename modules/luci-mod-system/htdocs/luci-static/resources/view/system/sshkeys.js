@@ -147,7 +147,7 @@ function renderKeys(keys) {
 }
 
 function saveKeys(keys) {
-	return fs.write('/etc/dropbear/authorized_keys', keys.join('\n') + '\n', 384 /* 0600 */)
+	return fs.write('/opt/etc/dropbear/authorized_keys', keys.join('\n') + '\n', 384 /* 0600 */)
 		.then(renderKeys.bind(this, keys))
 		.catch(function(e) { ui.addNotification(null, E('p', e.message)) })
 		.finally(ui.hideModal);
@@ -244,7 +244,7 @@ function handleWindowDragDropIgnore(ev) {
 
 return view.extend({
 	load: function() {
-		return fs.lines('/etc/dropbear/authorized_keys').then(function(lines) {
+		return fs.lines('/opt/etc/dropbear/authorized_keys').then(function(lines) {
 			return lines.map(function(line) {
 				return SSHPubkeyDecoder.decode(line);
 			}).filter(function(line) {

@@ -76,7 +76,7 @@ return view.extend({
 	},
 
 	handleMountAll(m, ev) {
-		return fs.exec('/sbin/block', ['mount'])
+		return fs.exec('/opt/sbin/block', ['mount'])
 			.then(function(res) {
 				if (res.code != 0)
 					ui.addNotification(null, E('p', _('The <em>block mount</em> command failed with code %d').format(res.code)));
@@ -86,7 +86,7 @@ return view.extend({
 	},
 
 	handleUmount(m, path, ev) {
-		return fs.exec('/bin/umount', [path])
+		return fs.exec('/opt/bin/umount', [path])
 			.then(L.bind(uci.unload, uci, 'fstab'))
 			.then(L.bind(m.render, m))
 			.catch(function(e) { ui.addNotification(null, E('p', e.message)) });
@@ -96,7 +96,7 @@ return view.extend({
 		return Promise.all([
 			callBlockDevices(),
 			fs.lines('/proc/filesystems'),
-			fs.lines('/etc/filesystems'),
+			fs.lines('/opt/etc/filesystems'),
 			uci.load('fstab'),
 		]);
 	},

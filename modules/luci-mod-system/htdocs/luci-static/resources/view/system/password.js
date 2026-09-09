@@ -70,8 +70,8 @@ return view.extend({
 
 	load: function() {
 		return Promise.all([
-			L.resolveDefault(fs.stat('/usr/sbin/uhttpd'), null),
-			fs.lines('/etc/passwd'),
+			L.resolveDefault(fs.stat('/opt/sbin/uhttpd'), null),
+			fs.lines('/opt/etc/passwd'),
 			uci.load('rpcd'),
 			uci.load('luci')
 		]);

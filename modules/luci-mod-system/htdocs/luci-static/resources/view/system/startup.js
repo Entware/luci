@@ -21,7 +21,7 @@ return view.extend({
 
 	load: function() {
 		return Promise.all([
-			L.resolveDefault(fs.read('/etc/rc.local'), ''),
+			L.resolveDefault(fs.read('/opt/etc/rc.local'), ''),
 			this.callRcList()
 		]);
 	},
@@ -33,7 +33,7 @@ return view.extend({
 
 			return true;
 		}).catch(function(e) {
-			ui.addNotification(null, E('p', _('Failed to execute "/etc/init.d/%s %s" action: %s').format(name, action, e)));
+			ui.addNotification(null, E('p', _('Failed to execute "/opt/etc/init.d/%s %s" action: %s').format(name, action, e)));
 		});
 	},
 
@@ -49,7 +49,7 @@ return view.extend({
 	handleRcLocalSave: function(ev) {
 		var value = (document.querySelector('textarea').value || '').trim().replace(/\r\n/g, '\n') + '\n';
 
-		return fs.write('/etc/rc.local', value).then(function() {
+		return fs.write('/opt/etc/rc.local', value).then(function() {
 			document.querySelector('textarea').value = value;
 			ui.addNotification(null, E('p', _('Contents have been saved.')), 'info');
 		}).catch(function(e) {
@@ -113,7 +113,7 @@ return view.extend({
 					table
 				]),
 				E('div', { 'data-tab': 'rc', 'data-tab-title': _('Local Startup') }, [
-					E('p', {}, _('This is the content of /etc/rc.local. Insert your own commands here (in front of \'exit 0\') to execute them at the end of the boot process.')),
+					E('p', {}, _('This is the content of /opt/etc/rc.local. Insert your own commands here (in front of \'exit 0\') to execute them at the end of the boot process.')),
 					E('p', {}, E('textarea', { 'style': 'width:100%', 'rows': 20, 'disabled': isReadonlyView }, [ (rcLocal != null ? rcLocal : '') ])),
 					E('div', { 'class': 'cbi-page-actions' }, [
 						E('button', {

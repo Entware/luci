@@ -67,7 +67,7 @@ const mapdata = { actions: {}, config: {} };
 return view.extend({
 	load() {
 		const tasks = [
-			L.resolveDefault(fs.stat('/lib/upgrade/platform.sh'), {}),
+			L.resolveDefault(fs.stat('/opt/lib/upgrade/platform.sh'), {}),
 			fs.trimmed('/proc/sys/kernel/hostname'),
 			fs.trimmed('/proc/mtd'),
 			fs.trimmed('/proc/partitions'),
@@ -99,7 +99,7 @@ return view.extend({
 		]);
 
 		/* Currently the sysupgrade rpc call will not return, hence no promise handling */
-		fs.exec('/sbin/firstboot', [ '-r', '-y' ]);
+		fs.exec('/opt/sbin/firstboot', [ '-r', '-y' ]);
 
 		ui.awaitReconnect('192.168.1.1', 'openwrt.lan');
 	},
@@ -108,7 +108,7 @@ return view.extend({
 		return ui.uploadFile('/tmp/backup.tar.gz', ev.target)
 			.then(L.bind(function(btn, res) {
 				btn.firstChild.data = _('Checking archive…');
-				return fs.exec('/bin/tar', [ '-tzf', '/tmp/backup.tar.gz' ]);
+				return fs.exec('/opt/bin/tar', [ '-tzf', '/tmp/backup.tar.gz' ]);
 			}, this, ev.target))
 			.then(L.bind(function(btn, res) {
 				if (res.code != 0) {
@@ -140,7 +140,7 @@ return view.extend({
 	},
 
 	handleRestoreConfirm(btn, ev) {
-		return fs.exec('/sbin/sysupgrade', [ '--restore-backup', '/tmp/backup.tar.gz' ])
+		return fs.exec('/opt/sbin/sysupgrade', [ '--restore-backup', '/tmp/backup.tar.gz' ])
 			.then(L.bind(function(btn, res) {
 				if (res.code != 0) {
 					ui.addNotification(null, [
@@ -151,7 +151,7 @@ return view.extend({
 				}
 
 				btn.firstChild.data = _('Rebooting…');
-				return fs.exec('/sbin/reboot');
+				return fs.exec('/opt/sbin/reboot');
 			}, this, ev.target))
 			.then(L.bind(function(res) {
 				if (res.code != 0) {
@@ -202,7 +202,7 @@ return view.extend({
 					.then(function(res) { return [ reply, res ]; });
 			}, this, ev.target))
 			.then(L.bind(function(btn, reply) {
-				return fs.exec('/sbin/sysupgrade', [ '--test', '/tmp/firmware.bin' ])
+				return fs.exec('/opt/sbin/sysupgrade', [ '--test', '/tmp/firmware.bin' ])
 					.then(function(res) { reply.push(res); return reply; });
 			}, this, ev.target))
 			.then(L.bind(function(btn, res) {
@@ -261,7 +261,7 @@ return view.extend({
 					}
 
 					body.push(E('p', {}, E('label', { 'class': 'btn' }, [
-						opts.backup_pkgs[0], ' ', _('Include in backup a list of current installed packages at /etc/backup/installed_packages.txt')
+						opts.backup_pkgs[0], ' ', _('Include in backup a list of current installed packages at /opt/etc/backup/installed_packages.txt')
 					])));
 				};
 
@@ -332,7 +332,7 @@ return view.extend({
 		args.push('/tmp/firmware.bin');
 
 		/* Currently the sysupgrade rpc call will not return, hence no promise handling */
-		fs.exec('/sbin/sysupgrade', args);
+		fs.exec('/opt/sbin/sysupgrade', args);
 
 		if (opts['keep'][0].checked)
 			ui.awaitReconnect(window.location.host);
@@ -341,7 +341,7 @@ return view.extend({
 	},
 
 	handleBackupList(ev) {
-		return fs.exec('/sbin/sysupgrade', [ '--list-backup' ]).then(function(res) {
+		return fs.exec('/opt/sbin/sysupgrade', [ '--list-backup' ]).then(function(res) {
 			if (res.code != 0) {
 				ui.addNotification(null, [
 					E('p', _('The sysupgrade command failed with code %d').format(res.code)),
@@ -365,7 +365,7 @@ return view.extend({
 
 	handleBackupSave(m, ev) {
 		return m.save(function() {
-			return fs.write('/etc/sysupgrade.conf', mapdata.config.editlist.trim().replace(/\r\n/g, '\n') + '\n');
+			return fs.write('/opt/etc/sysupgrade.conf', mapdata.config.editlist.trim().replace(/\r\n/g, '\n') + '\n');
 		}).then(function() {
 			ui.addNotification(null, E('p', _('Contents have been saved.')), 'info');
 		}).catch(function(e) {
@@ -449,7 +449,7 @@ return view.extend({
 		}
 
 
-		s = m.section(form.NamedSection, 'config', 'config', _('Configuration'), _('This is a list of shell glob patterns for matching files and directories to include during sysupgrade. Modified files in /etc/config/ and certain other configurations are automatically preserved.'));
+		s = m.section(form.NamedSection, 'config', 'config', _('Configuration'), _('This is a list of shell glob patterns for matching files and directories to include during sysupgrade. Modified files in /opt/etc/uci-config/ and certain other configurations are automatically preserved.'));
 		s.render = L.bind(function(view /*, ... */) {
 			return form.NamedSection.prototype.render.apply(this, this.varargs(arguments, 1))
 				.then(L.bind(function(node) {
@@ -474,7 +474,7 @@ return view.extend({
 		o.forcewrite = true;
 		o.rows = 30;
 		o.load = function(section_id) {
-			return L.resolveDefault(fs.read('/etc/sysupgrade.conf'), '');
+			return L.resolveDefault(fs.read('/opt/etc/sysupgrade.conf'), '');
 		};
 
 
