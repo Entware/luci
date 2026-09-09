@@ -174,7 +174,7 @@
 		{# entityencode AROUND striptags: striptags drops tags but escapes neither `&` nor quotes,
 		   so a hostname with `&` broke entity parsing. No XSS (the tags are gone), but the markup
 		   must be well-formed. #}
-		<title>{{ entityencode(striptags(`${boardinfo.hostname ?? 'OpenWrt'}${dispatched?.title ? ` | ${_(dispatched.title)}` : ''}`), true) }}</title>
+		<title>{{ entityencode(striptags(`${boardinfo.hostname ?? 'Entware'}${dispatched?.title ? ` | ${_(dispatched.title)}` : ''}`), true) }}</title>
 		{# The router-wide Appearance defaults, read by BOTH the pre-paint below and fs-prefs.js's
 		   current*() (so the Appearance page's controls show the effective default when this browser
 		   has no localStorage of its own). Enums are '', the colours '' (=off), rounding -1 (=unset)

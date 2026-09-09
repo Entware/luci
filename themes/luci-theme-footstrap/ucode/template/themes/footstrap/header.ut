@@ -181,7 +181,7 @@
 				   a class a foreign `*` outranks with one `!important`, so it is marked Zone 1 too.
 				   Inside .fs-main, which is NOT marked: that is where app pages render. #}
 				<div class="fs-title fs-sr" data-fs-chrome>
-					<h1 class="fs-title-main">{{ entityencode(striptags(dispatched?.title ? _(dispatched.title) : (boardinfo.hostname ?? 'OpenWrt')), true) }}</h1>
+					<h1 class="fs-title-main">{{ entityencode(striptags(dispatched?.title ? _(dispatched.title) : (boardinfo.hostname ?? 'Entware')), true) }}</h1>
 				</div>
 
 				{# The SPA router swaps the page with no reload, and a screen reader cannot notice:

@@ -5,8 +5,8 @@
 	"start_url": "/cgi-bin/luci/",
 	"scope": "/cgi-bin/luci/",
 	"display": "standalone",
-	"background_color": "#f6f8fa",
-	"theme_color": "#f6f8fa",
+	"background_color": "#4c7399",
+	"theme_color": "#4c7399",
 	"icons": [
 		{
 			"src": "/luci-static/footstrap/app-icon-512.png",
