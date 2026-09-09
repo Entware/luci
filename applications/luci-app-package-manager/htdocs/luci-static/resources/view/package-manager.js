@@ -933,7 +933,7 @@ function handleManualInstall(ev)
 function handleConfig(ev)
 {
 	const conf = {};
-	const base_dir = L.hasSystemFeature('apk') ? '/etc/apk' : '/etc/opkg';
+	const base_dir = L.hasSystemFeature('apk') ? '/opt/etc/apk' : '/opt/etc/opkg';
 
 	ui.showModal(_('%s Configuration').format(L.hasSystemFeature('apk') ? 'APK' : 'OPKG'), [
 		E('p', { 'class': 'spinning' }, _('Loading configuration data…'))
@@ -1100,7 +1100,7 @@ function handlePkg(ev)
 		if (pkg != null)
 			argv.push(pkg);
 
-		fs.exec_direct('/usr/libexec/package-manager-call', argv, 'json').then(function(res) {
+		fs.exec_direct('/opt/libexec/package-manager-call', argv, 'json').then(function(res) {
 			dlg.removeChild(dlg.lastChild);
 
 			if (res.pkmcmd)
@@ -1178,8 +1178,8 @@ function downloadLists()
 {
 	return Promise.all([
 		callMountPoints(),
-		fs.exec_direct('/usr/libexec/package-manager-call', [ 'list-available' ]),
-		fs.exec_direct('/usr/libexec/package-manager-call', [ 'list-installed' ])
+		fs.exec_direct('/opt/libexec/package-manager-call', [ 'list-available' ]),
+		fs.exec_direct('/opt/libexec/package-manager-call', [ 'list-installed' ])
 	]);
 }
 
