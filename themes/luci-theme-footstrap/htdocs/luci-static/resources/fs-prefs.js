@@ -15,7 +15,7 @@
  *
  * ---- three layers, and the browser always wins ----
  * The effective value of every axis is  localStorage ?? router-default ?? built-in.  The router
- * default is Appearance -> Save as default (saveAsDefault below, written to /etc/config/footstrap
+ * default is Appearance -> Save as default (saveAsDefault below, written to /opt/etc/uci-config/footstrap
  * and read back by the server into window.__fsSD); the built-in is a bare :root. So a NEW browser,
  * incognito, or a cleared cache inherits the router default, but THIS browser's own choice — stored
  * EXPLICITLY, see the next paragraph — overrides it, in either direction.
@@ -599,7 +599,7 @@ function currentRail() {
 	return document.documentElement.getAttribute('data-rail') === 'true';
 }
 
-/* ---- Save as default: write the current EFFECTIVE axes to /etc/config/footstrap ----
+/* ---- Save as default: write the current EFFECTIVE axes to /opt/etc/uci-config/footstrap ----
  * The scoped rpcd ACL (config 'footstrap' only) lets the logged-in admin's session set + commit
  * those options; rpcd validates the config/section/option names, so no value reaches a shell and
  * there is no injection surface. The server reads them back on the next load and the sanitiser in
@@ -758,7 +758,7 @@ function matchesSavedDefault() {
 	return Object.keys(cur).every((k) => cur[k] === _savedDefault[k]);
 }
 
-/* ---- no AXIS reaches /etc/config/footstrap except through Save-as-default ----------------------
+/* ---- no AXIS reaches /opt/etc/uci-config/footstrap except through Save-as-default ----------------------
  * EVERY axis is per-browser and reaches the router only through this button. Two of them used to
  * write through the moment they changed — `wallpaper` on every pick, `photo_dim` on every drag —
  * on the argument that the File photo is router-side, so "which wallpaper shows it" and "how dim"
@@ -790,7 +790,7 @@ function saveAsDefault() {
  *                     the keys cannot express it — that is precisely the sentence that means
  *                     "inherit the router default" (see the header).
  *
- * Both leave /etc/config/footstrap alone: neither is a way to un-save a router default, and an
+ * Both leave /opt/etc/uci-config/footstrap alone: neither is a way to un-save a router default, and an
  * admin who wants that presses Save as default from the look they want.
  *
  * The caller reloads so head.ut re-applies everything in one clean pass — the appliers would each
@@ -837,7 +837,7 @@ function resetToBuiltin() {
  * ROUTER-SIDE, like the login photo and for the same reason: a file cannot live in localStorage,
  * and a pattern is something a router wears, not something one browser does. The path is a FIXED
  * server-side constant matched exactly by the rpcd ACL, so nothing user-controlled reaches a path.
- * It lives under /etc so a package upgrade cannot delete it (and keep.d carries it across a
+ * It lives under /opt/etc so a package upgrade cannot delete it (and keep.d carries it across a
  * sysupgrade); the served name ENDS IN .svg because uhttpd types a file by extension, and an SVG
  * served as application/octet-stream is one no browser will paint.
  *
@@ -852,7 +852,7 @@ function resetToBuiltin() {
  * depth rather than the only line — but the check is cheap and the failure mode is somebody else's
  * browser. Scripted or externally-referencing markup is rejected client-side, before anything is
  * written. */
-const PAT_PATH  = '/etc/footstrap/pattern.svg';			/* cgi-upload target; the ACL grants exactly this */
+const PAT_PATH  = '/opt/etc/footstrap/pattern.svg';		/* cgi-upload target; the ACL grants exactly this */
 const PAT_SERVE = '/luci-static/footstrap/pattern.svg';	/* the uhttpd symlink to PAT_PATH (uci-defaults) */
 const PAT_MAX   = 512 * 1024;							/* a tile that has to reach a router's flash and then every page load */
 /* WHAT MAKES AN UPLOADED SVG UNACCEPTABLE, decided on the PARSED DOCUMENT and not on its text.
@@ -999,7 +999,7 @@ function removePattern() {
  * only its cache-bust token lives in uci -> window.__fsSD -> the url() head.ut stamps. The file path
  * is a FIXED server-side constant, matched exactly by the rpcd ACL, so nothing user-controlled ever
  * reaches a path — no traversal surface. */
-const BG_PATH  = '/etc/footstrap/login-bg';		/* cgi-upload target; the ACL grants exactly this */
+const BG_PATH  = '/opt/etc/footstrap/login-bg';		/* cgi-upload target; the ACL grants exactly this */
 const BG_SERVE = '/luci-static/footstrap/bg';	/* the uhttpd symlink to BG_PATH (uci-defaults) */
 const BG_MAX_SIDE = 1920;						/* cap the longest side — a router serves this off flash with no gzip, and 1080p covers the screens LuCI is actually admin'd from; still crisp full-screen, far fewer flash/wire bytes */
 const BG_QUALITY  = 0.9;
@@ -1028,8 +1028,8 @@ function _removeServed(path) {
 }
 /* cgi-upload writes the file mode 0600, and uhttpd refuses to SERVE a file that is not
  * world-readable (measured: 0600 -> 403, 0644 -> 200), so make it 0644 before it can be fetched. The
- * rpcd ACL grants exec on exactly two fixed commands — `/bin/chmod 644 /etc/footstrap/login-bg` and
- * `/bin/chmod 644 /etc/footstrap/pattern.svg`, the two files this module uploads — with no argument
+ * rpcd ACL grants exec on exactly two fixed commands — `/opt/bin/chmod 644 /opt/etc/footstrap/login-bg` and
+ * `/opt/bin/chmod 644 /opt/etc/footstrap/pattern.svg`, the two files this module uploads — with no argument
  * the caller controls. */
 const _fileExec = rpc.declare({ object: 'file', method: 'exec', params: [ 'command', 'params' ], reject: true });
 /* …and the ubus status is only half of it: `file.exec` reports the COMMAND's exit status inside the
@@ -1038,7 +1038,7 @@ const _fileExec = rpc.declare({ object: 'file', method: 'exec', params: [ 'comma
  * writes it 0600) — the upload reports success and every device, including the pre-login page, gets
  * a scrim over nothing. */
 function _chmodServeable(path) {
-	return _fileExec('/bin/chmod', [ '644', path ]).then((res) => {
+	return _fileExec('/opt/bin/chmod', [ '644', path ]).then((res) => {
 		if (res && res.code)
 			throw new Error(_('Upload failed.', 'footstrap') + ' (chmod ' + res.code + ')');
 		return res;
@@ -1108,8 +1108,8 @@ function _downscale(file) {
 /* An upload that has landed but could not be RECORDED must not stay on the router. The two paths
  * below write the file first (cgi-upload) and the token second (uci), and the second half can fail
  * on its own: no `settings` section yet, a narrowed uci ACL, ubus busy. The page then showed the
- * rpc error — honest as far as it went — while the image sat in /etc/footstrap at mode 0644 and was
- * served to ANYONE at /luci-static/footstrap/bg, because the /www symlink does not depend on the
+ * rpc error — honest as far as it went — while the image sat in /opt/etc/footstrap at mode 0644 and was
+ * served to ANYONE at /luci-static/footstrap/bg, because the /opt/www symlink does not depend on the
  * token. Worse, Remove is hidden exactly when the token is empty, so the page offered no way to
  * delete what it had just published. Roll the file back instead, and report the failure that
  * started it — a rollback that itself fails is appended, because at that point the admin has to

@@ -12,7 +12,7 @@
 					when its nearest ancestor is <body>, and this one lives inside <main> —
 					where it must stay: both layouts lay .fs-main out as a flex column and order
 					the footer within it. The explicit role escapes that scoping rule.
-					The version strings are entityencode()d: /etc/openwrt_release is root-owned,
+					The version strings are entityencode()d: /opt/etc/entware_release is root-owned,
 					but an unescaped `&` in a distname would still break the markup.
 				#}
 				<footer class="fs-footer" role="contentinfo">

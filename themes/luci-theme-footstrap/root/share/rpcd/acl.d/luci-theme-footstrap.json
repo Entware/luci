@@ -24,18 +24,18 @@
 				"upload"
 			],
 			"file": {
-				"/etc/footstrap/login-bg": [
+				"/opt/etc/footstrap/login-bg": [
 					"write",
 					"remove"
 				],
-				"/bin/chmod 644 /etc/footstrap/login-bg": [
+				"/opt/bin/chmod 644 /opt/etc/footstrap/login-bg": [
 					"exec"
 				],
-				"/etc/footstrap/pattern.svg": [
+				"/opt/etc/footstrap/pattern.svg": [
 					"write",
 					"remove"
 				],
-				"/bin/chmod 644 /etc/footstrap/pattern.svg": [
+				"/opt/bin/chmod 644 /opt/etc/footstrap/pattern.svg": [
 					"exec"
 				]
 			}

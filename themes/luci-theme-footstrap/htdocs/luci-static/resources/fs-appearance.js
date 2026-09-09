@@ -154,7 +154,7 @@ function build() {
 
 	/* EVERY LABEL IN HERE CARRIES THE 'footstrap' CONTEXT (`_(str, ctx)`, key `ctx\1str`). LuCI
 	 * serves ONE MERGED catalogue — load_catalog() loads every *.<lang>.lmo in
-	 * /usr/lib/lua/luci/i18n and a lookup returns the first archive holding the hash — so a msgid is
+	 * /opt/lib/lua/luci/i18n and a lookup returns the first archive holding the hash — so a msgid is
 	 * a GLOBAL name shared with every luci-app, and readdir order picks the winner: the layout
 	 * toggle rendered "Максимум" on a Russian router (issue #6), because another catalogue
 	 * translates the msgid "Top" as "maximum". Contexting cannot be selective — whatever we leave
@@ -463,7 +463,7 @@ function build() {
 	/* the version line: read from fs-version.js, which the Makefile stamps at package time. No
 	 * request, no check — `apk upgrade` is what tells this router about a new one. */
 
-	/* Save the current look as the ROUTER-WIDE default (fs-prefs writes it to /etc/config/footstrap
+	/* Save the current look as the ROUTER-WIDE default (fs-prefs writes it to /opt/etc/uci-config/footstrap
 	 * via the scoped uci ACL). It does NOT change this browser — localStorage keeps overriding, so
 	 * the saved default only shows on a fresh browser/device. "Reset" is the escape hatch: it clears
 	 * this browser's overrides and reloads onto the saved default (a two-click confirm, since it
@@ -477,14 +477,14 @@ function build() {
 	 * "Reset to saved" clears them and lets every axis fall back through the layers — to whatever
 	 * Save as default put on the ROUTER; "Reset to default" writes the THEME's own built-ins
 	 * explicitly, which is the only way to say "as the theme ships" on a router that has a saved
-	 * default of its own. Neither touches /etc/config/footstrap. */
+	 * default of its own. Neither touches /opt/etc/uci-config/footstrap. */
 	const resetSavedBtn = E('button', { 'class': 'btn', 'type': 'button' }, [ _('Reset to saved', 'footstrap') ]);
 	/* The stock destructive class, so the button that throws away every local tweak is the red one
 	 * on the page — LuCI paints .cbi-button-negative/.cbi-button-remove from --fs-danger
 	 * (theme/55-buttons.css). "Reset to saved" stays neutral on purpose: it drops this browser back
 	 * onto whatever the router says, which is a step BACK to a shared state rather than a discard. */
 	const resetBtn = E('button', { 'class': 'btn cbi-button-negative', 'type': 'button' }, [ _('Reset to default', 'footstrap') ]);
-	/* Save's only visible failure surface. saveAsDefault() writes /etc/config/footstrap over the
+	/* Save's only visible failure surface. saveAsDefault() writes /opt/etc/uci-config/footstrap over the
 	 * scoped uci ACL; the realistic failure is the rpc REJECTING — an expired session (403), a
 	 * missing ACL, ubus down — which the old code buried in a title tooltip nobody sees. (A DELETED
 	 * config is NOT caught here: rpcd stages the set in the session and commit then silently no-ops

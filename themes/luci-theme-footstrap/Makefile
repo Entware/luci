@@ -12,7 +12,7 @@ PKG_NAME:=luci-theme-footstrap
 # hook below. Pin it.
 LUCI_NAME:=luci-theme-footstrap
 
-PKG_MAINTAINER:=Ivan Kvashonkin <vizzlef@gmail.com>
+PKG_MAINTAINER:=Entware team, https://entware.net
 
 LUCI_TITLE:=Footstrap Theme
 LUCI_DESCRIPTION:=A standalone LuCI theme with a collapsible sidebar or top bar, light/dark \
@@ -42,33 +42,14 @@ LUCI_MINIFY_CSS:=0
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE
 
-# /etc/config/footstrap is SHIPPED as an empty stub and WRITTEN AT RUNTIME: Appearance -> "Save as
+# /opt/etc/uci-config/footstrap is SHIPPED as an empty stub and WRITTEN AT RUNTIME: Appearance -> "Save as
 # default" has rpcd uci-set the router-wide axes into that very file (fs-prefs.js saveAsDefault()).
 # Without this define the package manager owns it as an ordinary file and REPLACES it on upgrade,
 # so an admin's saved defaults are wiped by an ordinary package upgrade, silently, reported as
 # success. OpenWrt honours this for BOTH formats (include/package-pack.mk: KEEP_$(1) -> apk
 # .conffiles, ipk CONTROL/conffiles). Any future root/etc/config/* must be listed here too.
 define Package/luci-theme-footstrap/conffiles
-/etc/config/footstrap
-endef
-
-# RELOAD, NOT RESTART: rpcd holds sessions in memory, so `restart` logs out every LuCI user —
-# including the admin who just installed the theme. `reload` sends SIGHUP, which re-reads
-# /usr/share/rpcd/acl.d/*, and that ACL refresh is the only thing this package needs from rpcd.
-# Verified on a live router: a session survives `reload` and dies across `restart`.
-define Package/luci-theme-footstrap/postinst
-#!/bin/sh
-[ -n "$${IPKG_INSTROOT}" ] || {
-	# uci-defaults registers the theme; refresh rpcd + drop caches so LuCI sees it without a
-	# reboot. Calling it ourselves is belt-and-braces: OpenWrt's default_postinst also runs
-	# (then deletes) every /etc/uci-defaults/* we ship, so it executes twice per install. It is
-	# idempotent: the second pass finds the theme already registered and changes nothing.
-	[ -f /etc/uci-defaults/30_luci-theme-footstrap ] && \
-		sh /etc/uci-defaults/30_luci-theme-footstrap >/dev/null 2>&1 || true
-	rm -f /tmp/luci-indexcache* /tmp/luci-modulecache/* >/dev/null 2>&1 || true
-	/etc/init.d/rpcd reload >/dev/null 2>&1 || true
-}
-exit 0
+/opt/etc/uci-config/footstrap
 endef
 
 define Package/luci-theme-footstrap/postrm
@@ -86,16 +67,16 @@ case "$$1" in *upgrade*) exit 0 ;; esac
 	# half-removed bootstrap — the blank page this branch exists to avoid.
 	case "$$(uci -q get luci.main.mediaurlbase)" in
 		/luci-static/footstrap*)
-			[ -d /www/luci-static/bootstrap ] && \
-			[ -f /usr/share/ucode/luci/template/themes/bootstrap/header.ut ] && \
+			[ -d /opt/www/luci-static/bootstrap ] && \
+			[ -f /opt/share/ucode/luci/template/themes/bootstrap/header.ut ] && \
 				uci set luci.main.mediaurlbase=/luci-static/bootstrap ;;
 	esac
 	uci commit luci
 	# The admin-uploaded login background and pattern, kept out of the package on purpose so they
 	# survive an upgrade. A real removal is the one time they should go.
-	rm -rf /etc/footstrap >/dev/null 2>&1 || true
+	rm -rf /opt/etc/footstrap >/dev/null 2>&1 || true
 	rm -f /tmp/luci-indexcache* /tmp/luci-modulecache/* >/dev/null 2>&1 || true
-	/etc/init.d/rpcd reload >/dev/null 2>&1 || true	# see the postinst note: reload keeps sessions
+	pidof rpcd >/dev/null && /opt/etc/init.d/S50rpcd reconfigure >/dev/null 2>&1 || true	# see luci.mk's default postinst: reload keeps sessions
 }
 endef
 
