@@ -33,11 +33,11 @@ function popTimeout(a, message, timeout, severity) {
 }
 
 // Initialize global variables
-let currentPath = '/'; // Current path in the filesystem
+let currentPath = '/opt'; // Current path in the filesystem
 const selectedItems = new Set(); // Set of selected files/directories
 let sortField = 'name'; // Field to sort files by
 let sortAscending = true; // Sort direction (ascending/descending)
-let configFilePath = '/etc/config/filemanager'; // Path to the configuration file
+let configFilePath = '/opt/etc/uci-config/filemanager'; // Path to the configuration file
 
 // Initialize drag counter
 let dragCounter = 0;
@@ -78,7 +78,7 @@ let config = {
 	padding: 10,
 	paddingMin: 5,
 	paddingMax: 20,
-	currentDirectory: '/', // Current directory
+	currentDirectory: '/opt', // Current directory
 	texteditorHeight: 550,
 	hexeditorHeight: 550,
 
@@ -646,7 +646,7 @@ return view.extend({
 	load() {
 		const self = this;
 		return loadConfig().then(() => {
-			currentPath = config.currentDirectory || '/';
+			currentPath = config.currentDirectory || '/opt';
 			return getFileList(currentPath); // Load the file list for the current directory
 		});
 	},
@@ -2419,7 +2419,7 @@ return view.extend({
 				if (styleElement) {
 					styleElement.textContent = styleElement.textContent.replace(/padding: \d+px/g, 'padding: ' + config.padding + 'px');
 				}
-				currentPath = config.currentDirectory || '/';
+				currentPath = config.currentDirectory || '/opt';
 				const pathInput = document.getElementById('path-input');
 				if (pathInput) {
 					pathInput.value = currentPath;
