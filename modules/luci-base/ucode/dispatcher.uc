@@ -132,7 +132,7 @@ function determine_version() {
 			res.disturl = trim(kv[1], '"\' \n');
 			break;
 
-		case 'BUILD_ID':
+		case 'VERSION_ID':
 			res.distrevision = trim(kv[1], '"\' \n');
 			break;
 		}

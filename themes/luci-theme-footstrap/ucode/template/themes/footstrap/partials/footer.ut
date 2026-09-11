@@ -18,11 +18,11 @@
 				<footer class="fs-footer" role="contentinfo">
 					<span>
 						Powered by
-						<a href="https://github.com/openwrt/luci" target="_blank" rel="noreferrer">
+						<a href="https://github.com/Entware/luci" target="_blank" rel="noreferrer">
 							{{ entityencode(version.luciname, true) }} ({{ entityencode(version.luciversion, true) }})</a>
 						/
 						<a href="{{ entityencode(version.disturl ?? '#', true) }}" target="_blank" rel="noreferrer">
-							{{ entityencode(version.distname, true) }} {{ entityencode(version.distversion, true) }} ({{ entityencode(version.distrevision, true) }})</a>
+							{{ entityencode(version.distname, true) }} {{ entityencode(version.distversion, true) }}</a>
 						{% if (lua_active): %}
 							/ {{ _('Lua compatibility mode active') }}
 						{% endif %}
