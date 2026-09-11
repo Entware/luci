@@ -94,7 +94,17 @@ case "$action" in
 				done
 			fi
 
-			if flock -x 200; then
+			got_lock=false
+			i=0
+			# mkdir instead of touch: mkdir is atomic, touch is not.
+			while ! mkdir /tmp/ipkg.lockdir 2>/dev/null; do
+				i=$((i + 1))
+				[ "$i" -ge 15 ] && break
+				sleep 1
+			done
+			[ -d /tmp/ipkg.lockdir ] && got_lock=true
+
+			if $got_lock; then
 				pkmcmd="$cmd $action $@"
 				$cmd $action "$@" </dev/null >/tmp/ipkg.out 2>/tmp/ipkg.err
 				code=$?
@@ -111,9 +121,9 @@ case "$action" in
 			[ -n "$stdout" ] && json_add_string stdout "$stdout"
 			[ -n "$stderr" ] && json_add_string stderr "$stderr"
 			json_dump
-		) 200>/tmp/ipkg.lock
+		)
 
-		rm -f /tmp/ipkg.lock /tmp/ipkg.err /tmp/ipkg.out
+		rm -rf /tmp/ipkg.lockdir /tmp/ipkg.err /tmp/ipkg.out
 	;;
 	*)
 		echo "Usage: $0 {list-installed|list-available|update}" >&2
