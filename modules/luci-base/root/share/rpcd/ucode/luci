@@ -64,22 +64,55 @@ function set_new_pwd(user, pwd) {
 	});
 }
 
+function shadow_pwhash(user) {
+	for (let path in ['/opt/etc/shadow', '/opt/etc/passwd']) {
+		const fd = open(path);
+		if (!fd)
+			continue;
+
+		for (let line = fd.read('line'); length(line); line = fd.read('line')) {
+			const parts = split(line, ':');
+			if (parts[0] == user) {
+				fd.close();
+				return parts[1];
+			}
+		}
+
+		fd.close();
+	}
+
+	return null;
+}
+
 function check_oldpwd(user, pwd) {
-	let cmd, fd, value;
-	const ctx = cursor();
-	let valid = false;
+	let ok = false;
 
-	cmd = sprintf('/opt/sbin/uhttpd -m %s', shellquote(pwd));
-	fd = popen(cmd);
-	value = trim(fd.read('line'));
-	fd.close();
+	cursor().foreach('rpcd', 'login', s => {
+		if (s.username != user)
+			return;
 
-	ctx.foreach('rpcd', 'login', s => {
-		if (s.username == user && s.password == value)
-			valid = true;
+		let hash = s.password;
+
+		// "$p$<user>" is a shadow-indirection marker, not a literal hash
+		if (hash && index(hash, '$p$') == 0)
+			hash = shadow_pwhash(substr(hash, 3));
+
+		if (!hash) {
+			ok = true;
+			return false;
+		}
+
+		const fd = popen(sprintf('/opt/sbin/uhttpd -m %s %s', shellquote(pwd), shellquote(hash)));
+		const value = trim(fd.read('line'));
+		fd.close();
+
+		if (value == hash) {
+			ok = true;
+			return false;
+		}
 	});
 
-	return valid;
+	return ok;
 }
 
 function check_user(source, entry) {
