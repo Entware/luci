@@ -8,9 +8,10 @@ export function process_list() {
 	let line, list = [];
 
 	for (let line = top.read('line'); length(line); line = top.read('line')) {
-		let m = match(trim(line), /^([0-9]+) +([0-9]+) +(.+) +([RSDZTWI][<NW ][<N ]) +([0-9]+m?) +([0-9]+%) +([0-9]+%) +(.+)$/);
+		// Optional 7th group: Entware's busybox is built with FEATURE_TOP_SMP_PROCESS, which always adds a per-process CPU-core column.
+		let m = match(trim(line), /^([0-9]+) +([0-9]+) +(\S+) +([RSDZTWI<NW]{1,3}) +([0-9]+m?) *([0-9.]+)%? +([0-9]+ +)?([0-9.]+)%? +(.+)$/);
 
-		if (m && m[8] != '/opt/bin/busybox top -bn1') {
+		if (m && m[9] != '/opt/bin/busybox top -bn1') {
 			push(list, {
 				PID: m[1],
 				PPID: m[2],
@@ -18,8 +19,8 @@ export function process_list() {
 				STAT: m[4],
 				VSZ: m[5],
 				'%MEM': m[6],
-				'%CPU': m[7],
-				COMMAND: m[8]
+				'%CPU': m[8],
+				COMMAND: m[9]
 			});
 		}
 	}
