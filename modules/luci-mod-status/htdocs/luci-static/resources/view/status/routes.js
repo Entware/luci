@@ -38,7 +38,7 @@ function applyMask(addr, mask, v6) {
 return view.extend({
 	load() {
 		return Promise.all([
-			callNetworkInterfaceDump(),
+			L.resolveDefault(callNetworkInterfaceDump(), []),
 			L.resolveDefault(fs.exec('/opt/sbin/ip', [ '-4', 'neigh', 'show' ]), { stdout: '' }),
 			L.resolveDefault(fs.exec('/opt/sbin/ip', [ '-4', 'route', 'show', 'table', 'all' ]), { stdout: '' }),
 			L.resolveDefault(fs.exec('/opt/sbin/ip', [ '-4', 'rule', 'show' ]), { stdout: '' }),
