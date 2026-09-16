@@ -13,4 +13,4 @@ PKG_MAINTAINER:=Andreas Brau <ab@andi95.de>, \
 
 include ../../luci.mk
 
-# call BuildPackage - OpenWrt buildroot signature
+# call BuildPackage - Entware buildroot signature

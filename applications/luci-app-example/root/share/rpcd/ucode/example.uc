@@ -1,10 +1,10 @@
-#!/usr/bin/env ucode
+#!/opt/bin/ucode
 
 'use strict';
 
 import { cursor } from 'uci';
 
-// Rather than parse files in /etc/config, we can use `cursor`.
+// Rather than parse files in /opt/etc/uci-config, we can use `cursor`.
 const uci = cursor();
 
 const methods = {

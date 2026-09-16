@@ -38,7 +38,7 @@ msgstr "Perros"
 msgid "Dynamic list option"
 msgstr "Opción de la lista dinámica"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:3
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:3
 msgid "Example"
 msgstr "Ejemplo"
 
@@ -62,15 +62,15 @@ msgstr "Primera opción"
 msgid "Flag Option"
 msgstr "Opción de indicador"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:14
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:14
 msgid "Form View"
 msgstr "Vista de formulario"
 
-#: applications/luci-app-example/root/usr/share/rpcd/acl.d/luci-app-example.json:3
+#: applications/luci-app-example/root/share/rpcd/acl.d/luci-app-example.json:3
 msgid "Grant UCI and RPC access to LuCI app example"
 msgstr "Conceder acceso UCI y RPC al ejemplo de la aplicación LuCI"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:23
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:23
 msgid "HTML Page"
 msgstr "Página HTML"
 
@@ -125,15 +125,15 @@ msgstr "Periquitos"
 msgid "Password Option"
 msgstr "Opción de la contraseña"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:32
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:32
 msgid "RPC Array Example"
 msgstr "Ejemplo de matriz RPC"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:41
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:41
 msgid "RPC JSONMap Table Example"
 msgstr "Ejemplo de tabla RPC JSONMap"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:50
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:50
 msgid "RPC JSONMap Typed Example"
 msgstr "Ejemplo escrito de RPC JSONMap"
 

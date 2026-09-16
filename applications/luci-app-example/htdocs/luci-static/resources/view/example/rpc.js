@@ -9,9 +9,9 @@ listed by the shell command
 
 $ ubus list
 
-Custom ucode scripts can be placed in /usr/share/rpcd/ucode, and must emit JSON.
+Custom ucode scripts can be placed in /opt/share/rpcd/ucode, and must emit JSON.
 
-Permissions to make these calls must be granted in /usr/share/rpcd/acl.d
+Permissions to make these calls must be granted in /opt/share/rpcd/acl.d
 via a file named the same as the application package name (luci-app-example)
 */
 const load_sample1 = rpc.declare({

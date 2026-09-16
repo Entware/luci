@@ -9,7 +9,7 @@ return view.extend({
 
 		/*
 		The first argument to form.Map() maps to the configuration file available
-		via uci at /etc/config/. In this case, 'example' maps to /etc/config/example.
+		via uci at /opt/etc/uci-config/. In this case, 'example' maps to /opt/etc/uci-config/example.
 
 		If the file is completely empty, the form sections will indicate that the
 		section contains no values yet. As such, your package installation (LuCI app
