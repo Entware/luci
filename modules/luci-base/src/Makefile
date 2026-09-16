@@ -27,8 +27,8 @@ po2lmo: po2lmo.o lib/lmo.o lib/plural_formula.o
 compile: core.so version.uc
 
 install: compile
-	mkdir -p $(DESTDIR)/usr/lib/ucode/luci
-	cp core.so $(DESTDIR)/usr/lib/ucode/luci/core.so
+	mkdir -p $(DESTDIR)/opt/lib/ucode/luci
+	cp core.so $(DESTDIR)/opt/lib/ucode/luci/core.so
 
-	mkdir -p $(DESTDIR)/usr/share/ucode/luci
-	cp version.uc $(DESTDIR)/usr/share/ucode/luci/version.uc
+	mkdir -p $(DESTDIR)/opt/share/ucode/luci
+	cp version.uc $(DESTDIR)/opt/share/ucode/luci/version.uc

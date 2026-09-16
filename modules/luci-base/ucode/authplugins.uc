@@ -8,7 +8,7 @@ import { syslog, LOG_INFO, LOG_WARNING, LOG_AUTHPRIV } from 'log';
 let auth_plugins = null;
 
 // Plugin path following master's plugin architecture
-const PLUGIN_PATH = '/usr/share/ucode/luci/plugins/auth/login';
+const PLUGIN_PATH = '/opt/share/ucode/luci/plugins/auth/login';
 const VERIFY_RATE_LIMIT_FILE = '/tmp/luci-auth-verify-rate-limit.json';
 const VERIFY_RATE_LIMIT_LOCK_FILE = '/tmp/luci-auth-verify-rate-limit.lock';
 const VERIFY_RATE_LIMIT_MAX_ATTEMPTS = 3;

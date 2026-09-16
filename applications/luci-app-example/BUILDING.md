@@ -1,8 +1,8 @@
 # Building a LuCI package
 
-Essentially, you follow the [build system](https://openwrt.org/docs/guide-developer/toolchain/use-buildsystem) instructions: 
-1. Fetch the OpenWrt repository.
-2. Update the `feeds.conf.default` to point `luci` at a local directory
+Essentially, you follow the [build system](https://github.com/Entware/Entware/wiki/Compile-packages-from-sources) instructions: 
+1. Fetch the Entware repository.
+2. Update the `feeds.conf` to point `luci` at a local directory
 3. Build out the full toolchain
 4. Then follow the instructions for a [single package](https://openwrt.org/docs/guide-developer/toolchain/single.package) to build the `.opkg` file for the example app.
 
@@ -11,14 +11,14 @@ Wiki documentation overrides this file.
 ## Setup
 
 * Create a working directory, like `~/src`
-* Clone the OpenWrt repository into `~/src/openwrt`
+* Clone the Entware repository into `~/src/entware`
 * Clone the LuCI repository into `~/src/luci`
 
-From here on you'll be working in `~/src/openwrt`
+From here on you'll be working in `~/src/entware`
 
 ## Remapping LuCI source to local disk
 
-* Edit `~/src/openwrt/feeds.conf.default` and comment out the `src-git luci` entry
+* Edit `~/src/entware/feeds.conf` and comment out the `src-git luci` entry
 * Add a `src-link luci` entry pointing to your luci checkout - for example `src-link luci /home/myuser/src/luci`
 * Use the `scripts/feeds` tool per the [documentation](https://openwrt.org/docs/guide-developer/toolchain/use-buildsystem#updating_feeds) to update and install all feeds; you should see the local directory get used for luci
 
@@ -37,7 +37,7 @@ If you're doing a whole new application, instead of editing this one, you can us
 ## Toolchain build
 
 Even though you're only building a simple JS package, you'll need the whole toolchain.
-Though the command says "install", nothing is actually installed outside of the working directory (`~/src/openwrt` in this case).
+Though the command says "install", nothing is actually installed outside of the working directory (`~/src/entware` in this case).
 
 * Run `make tools/install`
 * Run `make toolchain/install`

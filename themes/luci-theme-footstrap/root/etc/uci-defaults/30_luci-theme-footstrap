@@ -23,14 +23,14 @@ fi
 
 [ "$changed" = 1 ] && uci commit luci
 
-# uhttpd serves /www only, so the admin's own uploads live in /etc — where a sysupgrade keeps them
+# uhttpd serves /opt/www only, so the admin's own uploads live in /opt/etc — where a sysupgrade keeps them
 # (lib/upgrade/keep.d) — and are reached through symlinks. The pattern keeps its .svg name: uhttpd
 # types a response by extension, and an SVG sent as octet-stream paints nowhere.
-mkdir -p /etc/footstrap
-if [ -d /www/luci-static/footstrap ]; then
-	ln -sf /etc/footstrap/login-bg /www/luci-static/footstrap/bg
-	ln -sf /etc/footstrap/pattern.svg /www/luci-static/footstrap/pattern.svg
-	ln -sfn /etc/footstrap/fonts /www/luci-static/footstrap/fonts
+mkdir -p /opt/etc/footstrap
+if [ -d /opt/www/luci-static/footstrap ]; then
+	ln -sf /opt/etc/footstrap/login-bg /opt/www/luci-static/footstrap/bg
+	ln -sf /opt/etc/footstrap/pattern.svg /opt/www/luci-static/footstrap/pattern.svg
+	ln -sfn /opt/etc/footstrap/fonts /opt/www/luci-static/footstrap/fonts
 fi
 
 exit 0

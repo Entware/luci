@@ -4,7 +4,7 @@
 import { access, basename, stat } from 'fs';
 import { cursor } from 'uci';
 
-const template_directory = '/usr/share/ucode/luci/template';
+const template_directory = '/opt/share/ucode/luci/template';
 
 function cut_message(msg) {
 	return trim(replace(msg, /\n--\n.*$/, ''));
@@ -179,7 +179,7 @@ export default function(env) {
 	self.env.media = media;
 	self.env.theme = basename(media);
 	self.env.resource = uci.get('luci', 'main', 'resourcebase');
-	self.env.pkgs_update_time = stat('/lib/apk/db/installed')?.mtime ?? stat('/usr/lib/opkg/status')?.mtime ?? 0;
+	self.env.pkgs_update_time = stat('/opt/lib/apk/db/installed')?.mtime ?? stat('/opt/lib/opkg/status')?.mtime ?? 0;
 	self.env.include = (...args) => self.render_any(...args);
 
 	return self;

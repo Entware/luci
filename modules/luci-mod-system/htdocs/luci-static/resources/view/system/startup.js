@@ -1,60 +1,44 @@
 'use strict';
 'require view';
-'require rpc';
 'require fs';
 'require ui';
 
 var isReadonlyView = !L.hasViewPermission() || null;
+var INITD = '/opt/etc/init.d';
 
 return view.extend({
-	callRcList: rpc.declare({
-		object: 'rc',
-		method: 'list',
-		expect: { '': {} }
-	}),
+	load: async function() {
+		var entries = fs.list(INITD).catch(function() { return [] });
 
-	callRcInit: rpc.declare({
-		object: 'rc',
-		method: 'init',
-		params: [ 'name', 'action' ],
-	}),
+		var initList = {};
 
-	load: function() {
-		return Promise.all([
-			L.resolveDefault(fs.read('/etc/rc.local'), ''),
-			this.callRcList()
-		]);
+		(await entries).forEach(function(e) {
+			var m = e.type === 'file' && e.name.match(/^S([0-9]+)/);
+			if (m)
+				initList[e.name] = { start: +m[1], enabled: !!(e.mode & 0o100) };
+		});
+
+		return initList;
 	},
 
 	handleAction: function(name, action, ev) {
-		return this.callRcInit(name, action).then(function(ret) {
-			if (ret)
-				throw _('Command failed');
+		return fs.exec_direct('%s/%s'.format(INITD, name), [ action ]).then(function(res) {
+			if (res)
+				ui.addNotification(null, E('p', [ E('strong', name + ' ' + action + ':'), E('pre', res) ]), 'info');
 
 			return true;
 		}).catch(function(e) {
-			ui.addNotification(null, E('p', _('Failed to execute "/etc/init.d/%s %s" action: %s').format(name, action, e)));
+			ui.addNotification(null, E('p', _('Failed to execute "%s %s" action: %s').format(name, action, e)));
 		});
 	},
 
 	handleEnableDisable: function(name, isEnabled, ev) {
-		return this.handleAction(name, isEnabled ? 'disable' : 'enable', ev).then(L.bind(function(name, isEnabled, btn) {
+		return fs.exec_direct('/opt/bin/chmod', [ isEnabled ? 'u-x' : 'u+x', '%s/%s'.format(INITD, name) ]).then(L.bind(function(name, isEnabled, btn) {
 			btn.parentNode.replaceChild(this.renderEnableDisable({
 				name: name,
 				enabled: isEnabled
 			}), btn);
 		}, this, name, !isEnabled, ev.currentTarget));
-	},
-
-	handleRcLocalSave: function(ev) {
-		var value = (document.querySelector('textarea').value || '').trim().replace(/\r\n/g, '\n') + '\n';
-
-		return fs.write('/etc/rc.local', value).then(function() {
-			document.querySelector('textarea').value = value;
-			ui.addNotification(null, E('p', _('Contents have been saved.')), 'info');
-		}).catch(function(e) {
-			ui.addNotification(null, E('p', _('Unable to save contents: %s').format(e.message)));
-		});
 	},
 
 	renderEnableDisable: function(init) {
@@ -65,10 +49,8 @@ return view.extend({
 		}, init.enabled ? _('Enabled') : _('Disabled'));
 	},
 
-	render: function(data) {
-		var rcLocal = data[0],
-		    initList = data[1],
-		    rows = [], list = [];
+	render: function(initList) {
+		var rows = [], list = [];
 
 		var table = E('table', { 'class': 'table' }, [
 			E('tr', { 'class': 'tr table-titles' }, [
@@ -92,12 +74,12 @@ return view.extend({
 		for (var i = 0; i < list.length; i++) {
 			rows.push([
 				'%02d'.format(list[i].start),
-				list[i].name,
+				list[i].name.replace(/^S[0-9]+/, ''),
 				E('div', [
 					this.renderEnableDisable(list[i]),
 					E('button', { 'class': 'btn cbi-button-action', 'click': ui.createHandlerFn(this, 'handleAction', list[i].name, 'start'), 'disabled': isReadonlyView }, _('Start', 'daemon start action')),
 					E('button', { 'class': 'btn cbi-button-action', 'click': ui.createHandlerFn(this, 'handleAction', list[i].name, 'restart'), 'disabled': isReadonlyView }, _('Restart', 'daemon restart action')),
-					E('button', { 'class': 'btn cbi-button-action', 'click': ui.createHandlerFn(this, 'handleAction', list[i].name, 'reload'), 'disabled': isReadonlyView }, _('Reload', 'daemon reload action')),
+					E('button', { 'class': 'btn cbi-button-action', 'click': ui.createHandlerFn(this, 'handleAction', list[i].name, 'reconfigure'), 'disabled': isReadonlyView }, _('Reload', 'daemon reload action')),
 					E('button', { 'class': 'btn cbi-button-action', 'click': ui.createHandlerFn(this, 'handleAction', list[i].name, 'stop'), 'disabled': isReadonlyView }, _('Stop', 'daemon stop action'))
 				])
 			]);
@@ -111,17 +93,6 @@ return view.extend({
 				E('div', { 'data-tab': 'init', 'data-tab-title': _('Initscripts') }, [
 					E('p', {}, _('You can enable or disable installed init scripts here. Changes will be applied after a device reboot.<br /><strong>Warning: If you disable essential init scripts like "network", your device might become inaccessible!</strong>')),
 					table
-				]),
-				E('div', { 'data-tab': 'rc', 'data-tab-title': _('Local Startup') }, [
-					E('p', {}, _('This is the content of /etc/rc.local. Insert your own commands here (in front of \'exit 0\') to execute them at the end of the boot process.')),
-					E('p', {}, E('textarea', { 'style': 'width:100%', 'rows': 20, 'disabled': isReadonlyView }, [ (rcLocal != null ? rcLocal : '') ])),
-					E('div', { 'class': 'cbi-page-actions' }, [
-						E('button', {
-							'class': 'btn cbi-button-save',
-							'click': ui.createHandlerFn(this, 'handleRcLocalSave'),
-							'disabled': isReadonlyView
-						}, _('Save'))
-					])
 				])
 			])
 		]);

@@ -7,21 +7,21 @@
 
 
 /**
- * Get users found in `/etc/passwd`.
+ * Get users found in `/opt/etc/passwd`.
  * @returns {string[]}
  */
 function getUsers() {
-    return fs.lines('/etc/passwd').then(function(lines) {
+    return fs.lines('/opt/etc/passwd').then(function(lines) {
         return lines.map(function(line) { return line.split(/:/)[0] });
     });
 }
 
 /**
- * Get users found in `/etc/group`.
+ * Get users found in `/opt/etc/group`.
  * @returns {string[]}
  */
 function getGroups() {
-    return fs.lines('/etc/group').then(function(lines) {
+    return fs.lines('/opt/etc/group').then(function(lines) {
         return lines.map(function(line) { return line.split(/:/)[0] });
     });
 }

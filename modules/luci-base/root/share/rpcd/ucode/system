@@ -1,0 +1,104 @@
+// Copyright 2026 Entware
+// Licensed to the public under the Apache License 2.0.
+
+'use strict';
+
+import { readfile } from 'fs';
+import { cursor } from 'uci';
+import { uname, statvfs } from 'luci.core';
+
+function entware_release() {
+	const lines = readfile('/opt/etc/entware_release');
+	const info = {};
+
+	if (!lines)
+		return info;
+
+	for (let line in split(lines, '\n')) {
+		const m = match(line, /^([A-Z_]+)=(.*)$/);
+		if (!m)
+			continue;
+
+		info[lc(m[1])] = trim(m[2], '"');
+	}
+
+	return info;
+}
+
+function meminfo() {
+	const lines = readfile('/proc/meminfo');
+	const kv = {};
+
+	for (let line in split(lines ?? '', '\n')) {
+		const m = match(line, /^([A-Za-z0-9_()]+):\s*([0-9]+)\s*kB$/);
+		if (m)
+			kv[m[1]] = int(m[2]) * 1024;
+	}
+
+	return kv;
+}
+
+// Matches procd's schema: memory/swap in bytes, root/tmp in KB (25_storage.js compensates).
+function diskinfo(path) {
+	const st = statvfs(path);
+	if (!st || !st.blocks)
+		return { total: 0, used: 0, avail: 0 };
+
+	const total = (st.bsize * st.blocks) / 1024;
+	const avail = (st.bsize * st.bavail) / 1024;
+
+	return { total, used: total - (st.bsize * st.bfree) / 1024, avail };
+}
+
+const methods = {
+	board: {
+		call: function() {
+			const u = uname() ?? {};
+			const rel = entware_release();
+			const hostname = cursor()?.get?.('system', '@system[0]', 'hostname') ?? 'Entware';
+
+			return {
+				kernel: u.release ?? '',
+				hostname,
+				system: u.machine ?? '',
+				model: rel.pretty_name ?? 'Entware',
+				board_name: 'entware',
+				release: {
+					distribution: 'Entware',
+					version: rel.version_id ?? '',
+					revision: '',
+					target: 'entware',
+					description: rel.pretty_name ?? 'Entware'
+				}
+			};
+		}
+	},
+
+	info: {
+		call: function() {
+			const mem = meminfo();
+			const uptime = trim(readfile('/proc/uptime') ?? '0');
+			const la = split(trim(readfile('/proc/loadavg') ?? '0 0 0'), ' ');
+
+			return {
+				uptime: int(split(uptime, ' ')[0]),
+				load: [ int(+la[0] * 65536), int(+la[1] * 65536), int(+la[2] * 65536) ],
+				memory: {
+					total: mem.MemTotal ?? 0,
+					free: mem.MemFree ?? 0,
+					available: mem.MemAvailable ?? mem.MemFree ?? 0,
+					buffered: mem.Buffers ?? 0,
+					cached: mem.Cached ?? 0,
+				},
+				swap: {
+					total: mem.SwapTotal ?? 0,
+					free: mem.SwapFree ?? 0,
+				},
+				root: diskinfo('/'),
+				tmp: diskinfo('/tmp'),
+			};
+		}
+	}
+};
+
+return { system: methods };

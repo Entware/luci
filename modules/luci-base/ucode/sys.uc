@@ -4,13 +4,14 @@
 import { basename, readlink, readfile, open, popen, stat, glob } from 'fs';
 
 export function process_list() {
-	const top = popen('/bin/busybox top -bn1');
+	const top = popen('/opt/bin/busybox top -bn1');
 	let line, list = [];
 
 	for (let line = top.read('line'); length(line); line = top.read('line')) {
-		let m = match(trim(line), /^([0-9]+) +([0-9]+) +(.+) +([RSDZTWI][<NW ][<N ]) +([0-9]+m?) +([0-9]+%) +([0-9]+%) +(.+)$/);
+		// Optional 7th group: Entware's busybox is built with FEATURE_TOP_SMP_PROCESS, which always adds a per-process CPU-core column.
+		let m = match(trim(line), /^([0-9]+) +([0-9]+) +(\S+) +([RSDZTWI<NW]{1,3}) +([0-9]+m?) *([0-9.]+)%? +([0-9]+ +)?([0-9.]+)%? +(.+)$/);
 
-		if (m && m[8] != '/bin/busybox top -bn1') {
+		if (m && m[9] != '/opt/bin/busybox top -bn1') {
 			push(list, {
 				PID: m[1],
 				PPID: m[2],
@@ -18,8 +19,8 @@ export function process_list() {
 				STAT: m[4],
 				VSZ: m[5],
 				'%MEM': m[6],
-				'%CPU': m[7],
-				COMMAND: m[8]
+				'%CPU': m[8],
+				COMMAND: m[9]
 			});
 		}
 	}
@@ -30,7 +31,7 @@ export function process_list() {
 };
 
 export function conntrack_list(callback) {
-	const etcpr = open('/etc/protocols');
+	const etcpr = open('/opt/etc/protocols');
 	const protos = {};
 
 	if (etcpr) {
@@ -46,7 +47,7 @@ export function conntrack_list(callback) {
 
 	let nfct = open('/proc/net/nf_conntrack', 'r');
 	if (! nfct) {
-		nfct = popen('/usr/sbin/conntrack -L -o extended', 'r');
+		nfct = popen('/opt/sbin/conntrack -L -o extended', 'r');
 	}
 	let connt;
 
@@ -116,7 +117,7 @@ export function conntrack_list(callback) {
 };
 
 export function init_list() {
-	return map(filter(glob('/etc/init.d/*'), path => {
+	return map(filter(glob('/opt/etc/init.d/*'), path => {
 		const s = stat(path);
 
 		return s?.type == 'file' && s?.perm?.user_exec;
@@ -124,7 +125,7 @@ export function init_list() {
 };
 
 export function init_index(name) {
-	const src = readfile(`/etc/init.d/${basename(name)}`, 2048);
+	const src = readfile(`/opt/etc/init.d/${basename(name)}`, 2048);
 	const idx = [];
 
 	for (let m in match(src, /^[[:space:]]*(START|STOP)=('[0-9][0-9]'|"[0-9][0-9]"|[0-9][0-9])[[:space:]]*$/gs)) {
@@ -138,10 +139,10 @@ export function init_index(name) {
 };
 
 export function init_enabled(name) {
-	for (let path in glob(`/etc/rc.d/[SK][0-9][0-9]${basename(name)}`)) {
+	for (let path in glob(`/opt/etc/init.d/[SK][0-9][0-9]${basename(name)}`)) {
 		const ln = readlink(path);
-		const s1 = stat(index(ln, '/') == 0 ? ln : `/etc/rc.d/${ln}`);
-		const s2 = stat(`/etc/init.d/${basename(name)}`);
+		const s1 = stat(index(ln, '/') == 0 ? ln : `/opt/etc/init.d/${ln}`);
+		const s2 = stat(`/opt/etc/init.d/${basename(name)}`);
 
 		if (s1?.inode == s2?.inode && s1?.type == 'file' && s1?.perm?.user_exec)
 			return true;

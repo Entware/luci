@@ -13,7 +13,7 @@ CMAKE_INSTALL:=1
 PKG_LICENSE:=ISC
 PKG_LICENSE_FILES:=LICENSE
 
-PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>
+PKG_MAINTAINER:=Entware team, https://entware.net
 PKG_CONFIG_DEPENDS:=CONFIG_PACKAGE_liblucihttp-lua CONFIG_PACKAGE_liblucihttp-ucode
 
 include $(INCLUDE_DIR)/package.mk
@@ -40,34 +40,34 @@ define Package/liblucihttp-ucode
   TITLE:=ucode binding for the LuCI HTTP utility library
 endef
 
-TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include
+TARGET_CFLAGS += -I$(STAGING_DIR)/opt/include
 
 CMAKE_OPTIONS += \
-	-DLUAPATH=/usr/lib/lua \
+	-DLUAPATH=/opt/lib/lua \
 	-DBUILD_LUA=$(if $(CONFIG_PACKAGE_liblucihttp-lua),ON,OFF) \
 	-DBUILD_UCODE=$(if $(CONFIG_PACKAGE_liblucihttp-ucode),ON,OFF) \
 	-DBUILD_TESTS=OFF
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/liblucihttp.so* $(1)/usr/lib/
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/* $(1)/usr/include/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/liblucihttp.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
 endef
 
 define Package/liblucihttp/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/liblucihttp.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/liblucihttp.so.* $(1)/opt/lib/
 endef
 
 define Package/liblucihttp-lua/install
-	$(INSTALL_DIR) $(1)/usr/lib/lua
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lua/lucihttp.so $(1)/usr/lib/lua/
+	$(INSTALL_DIR) $(1)/opt/lib/lua
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/lua/lucihttp.so $(1)/opt/lib/lua/
 endef
 
 define Package/liblucihttp-ucode/install
-	$(INSTALL_DIR) $(1)/usr/lib/ucode
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/ucode/lucihttp.so $(1)/usr/lib/ucode/
+	$(INSTALL_DIR) $(1)/opt/lib/ucode
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/ucode/lucihttp.so $(1)/opt/lib/ucode/
 endef
 
 $(eval $(call BuildPackage,liblucihttp))

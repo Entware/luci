@@ -1,0 +1,15 @@
+#!/bin/sh
+
+case "$1" in
+	start)
+		rm -rf /tmp/luci-indexcache* /tmp/luci-modulecache \
+			/tmp/luci-auth-verify-rate-limit.json /tmp/luci-auth-verify-rate-limit.lock
+		;;
+	stop|restart|check|kill|reconfigure)
+		exit 0
+		;;
+	*)
+		echo "Usage: $0 (start|stop|restart|check|kill|reconfigure)"
+		exit 1
+		;;
+esac

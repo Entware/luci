@@ -40,7 +40,7 @@ msgstr "강아지"
 msgid "Dynamic list option"
 msgstr "동적 목록 옵션"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:3
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:3
 msgid "Example"
 msgstr "예제"
 
@@ -64,15 +64,15 @@ msgstr "첫번째 옵션"
 msgid "Flag Option"
 msgstr "플래그 옵션"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:14
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:14
 msgid "Form View"
 msgstr "양식 화면"
 
-#: applications/luci-app-example/root/usr/share/rpcd/acl.d/luci-app-example.json:3
+#: applications/luci-app-example/root/share/rpcd/acl.d/luci-app-example.json:3
 msgid "Grant UCI and RPC access to LuCI app example"
 msgstr "LuCI 앱 예제에 UCI 및 RPC 접근 권한 부여"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:23
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:23
 msgid "HTML Page"
 msgstr "HTML 페이지"
 
@@ -126,15 +126,15 @@ msgstr "잉꼬"
 msgid "Password Option"
 msgstr "암호 옵션"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:32
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:32
 msgid "RPC Array Example"
 msgstr "RPC 배열 예제"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:41
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:41
 msgid "RPC JSONMap Table Example"
 msgstr "RPC JSONMap 테이블 예제"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:50
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:50
 msgid "RPC JSONMap Typed Example"
 msgstr "RPC JSONMap 유형별 예제"
 

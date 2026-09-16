@@ -9,7 +9,7 @@ const raw_style = 'font-family:monospace;font-size:smaller;text-align:right';
 
 return view.extend({
 	load() {
-		return L.resolveDefault(fs.stat('/usr/sbin/ip6tables'));
+		return L.resolveDefault(fs.stat('/opt/sbin/ip6tables'));
 	},
 
 	createTableSection(is_ipv6, table) {
@@ -223,10 +223,10 @@ return view.extend({
 	},
 
 	pollFirewallLists(has_ip6tables) {
-		const cmds = [ '/usr/sbin/iptables' ];
+		const cmds = [ '/opt/sbin/iptables' ];
 
 		if (has_ip6tables)
-			cmds.push('/usr/sbin/ip6tables');
+			cmds.push('/opt/sbin/ip6tables');
 
 		poll.add(L.bind(function() {
 			const tasks = [];
@@ -304,15 +304,15 @@ return view.extend({
 
 	handleCounterReset(has_ip6tables, ev) {
 		return Promise.all([
-			fs.exec('/usr/sbin/iptables', [ '-Z' ])
+			fs.exec('/opt/sbin/iptables', [ '-Z' ])
 				.catch(function(err) { ui.addNotification(null, E('p', {}, _('Unable to reset iptables counters: %s').format(err.message))) }),
-			has_ip6tables ? fs.exec('/usr/sbin/ip6tables', [ '-Z' ])
+			has_ip6tables ? fs.exec('/opt/sbin/ip6tables', [ '-Z' ])
 				.catch(function(err) { ui.addNotification(null, E('p', {}, _('Unable to reset ip6tables counters: %s').format(err.message))) }) : null
 		]);
 	},
 
 	handleRestart(ev) {
-		return fs.exec_direct('/etc/init.d/firewall', [ 'restart' ])
+		return fs.exec_direct('/opt/etc/init.d/firewall', [ 'restart' ])
 				.catch(function(err) { ui.addNotification(null, E('p', {}, _('Unable to restart firewall: %s').format(err.message))) });
 	},
 

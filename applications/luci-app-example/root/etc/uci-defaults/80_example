@@ -1,6 +1,6 @@
 #!/bin/sh
 
-touch /etc/config/example
+touch /opt/etc/uci-config/example
 uci set example.first=first
 uci set example.second=second
 uci set example.third=third

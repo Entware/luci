@@ -49,7 +49,7 @@
 <form method="post" class="fs-login">
 	{#
 	 The router's name, above everything else in the card — an admin with three of these open has no
-	 other way to tell the tabs apart once the form is focused. `?? 'OpenWrt'` is the fallback
+	 other way to tell the tabs apart once the form is focused. `?? 'Entware'` is the fallback
 	 partials/head.ut and partials/brand.ut already use, so the line never renders empty; the
 	 striptags/entityencode pair is theirs too, and load-bearing: the hostname is admin-controlled
 	 text printed to an UNAUTHENTICATED page, and one containing `&` broke entity parsing here
@@ -62,7 +62,7 @@
 	 (10-login.css) because that is where a reader looks for "which box is this", not because it
 	 outranks anything.
 	-#}
-	<p class="fs-login-host">{{ entityencode(striptags(boardinfo.hostname ?? 'OpenWrt'), true) }}</p>
+	<p class="fs-login-host">{{ entityencode(striptags(boardinfo.hostname ?? 'Entware'), true) }}</p>
 	{#
 	 TWO INDEPENDENT ALERTS, because neither variable on its own says which of the two dispatcher
 	 branches rendered this page — and each of the two spellings in the tree picks one and gets the

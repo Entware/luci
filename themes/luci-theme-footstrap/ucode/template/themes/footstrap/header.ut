@@ -6,7 +6,7 @@
  Licensed to the public under the Apache License 2.0.
 
  i18n, AND THE RULE THE OTHER TEMPLATES POINT AT. A msgid is a GLOBAL name: LuCI serves ONE
- merged catalogue — load_catalog() loads every *.<lang>.lmo in /usr/lib/lua/luci/i18n and a lookup
+ merged catalogue — load_catalog() loads every *.<lang>.lmo in /opt/lib/lua/luci/i18n and a lookup
  returns the first archive holding the hash — so readdir order decides who owns a string. The
  Appearance layout toggle rendered "Максимум" on a Russian router (issue #6), because somebody
  else's catalogue translates the msgid `Top` as "maximum". Anything we leave BARE is a name anyone
@@ -28,7 +28,7 @@
 
 	const boardinfo = ubus.call('system', 'board') ?? {};
 	const empty_password = (getuid() == 0 && getspnam('root')?.pwdp === '');
-	/* The ROUTER's saved Appearance defaults (Appearance -> Save as default, in /etc/config/footstrap):
+	/* The ROUTER's saved Appearance defaults (Appearance -> Save as default, in /opt/etc/uci-config/footstrap):
 	   head.ut stamps them before paint and the client's own localStorage overrides every one — the
 	   browser choice always wins. Layout falls back to the legacy migration seed
 	   luci.main.footstrap_layout=top, which an admin may set to give the router a default
@@ -181,7 +181,7 @@
 				   a class a foreign `*` outranks with one `!important`, so it is marked Zone 1 too.
 				   Inside .fs-main, which is NOT marked: that is where app pages render. #}
 				<div class="fs-title fs-sr" data-fs-chrome>
-					<h1 class="fs-title-main">{{ entityencode(striptags(dispatched?.title ? _(dispatched.title) : (boardinfo.hostname ?? 'OpenWrt')), true) }}</h1>
+					<h1 class="fs-title-main">{{ entityencode(striptags(dispatched?.title ? _(dispatched.title) : (boardinfo.hostname ?? 'Entware')), true) }}</h1>
 				</div>
 
 				{# The SPA router swaps the page with no reload, and a screen reader cannot notice:

@@ -39,13 +39,13 @@ function applyMask(addr, mask, v6) {
 return view.extend({
 	load() {
 		return Promise.all([
-			callNetworkInterfaceDump(),
-			L.resolveDefault(fs.exec('/sbin/ip', [ '-4', '-j', 'neigh', 'show' ]), {}),
-			L.resolveDefault(fs.exec('/sbin/ip', [ '-4', '-j', 'route', 'show', 'table', 'all' ]), {}),
-			L.resolveDefault(fs.exec('/sbin/ip', [ '-4', '-j', 'rule', 'show' ]), {}),
-			L.resolveDefault(fs.exec('/sbin/ip', [ '-6', '-j', 'neigh', 'show' ]), {}),
-			L.resolveDefault(fs.exec('/sbin/ip', [ '-6', '-j', 'route', 'show', 'table', 'all' ]), {}),
-			L.resolveDefault(fs.exec('/sbin/ip', [ '-6', '-j', 'rule', 'show' ]), {}),
+			L.resolveDefault(callNetworkInterfaceDump(), []),
+			L.resolveDefault(fs.exec('/opt/sbin/ip', [ '-4', '-j', 'neigh', 'show' ]), {}),
+			L.resolveDefault(fs.exec('/opt/sbin/ip', [ '-4', '-j', 'route', 'show', 'table', 'all' ]), {}),
+			L.resolveDefault(fs.exec('/opt/sbin/ip', [ '-4', '-j', 'rule', 'show' ]), {}),
+			L.resolveDefault(fs.exec('/opt/sbin/ip', [ '-6', '-j', 'neigh', 'show' ]), {}),
+			L.resolveDefault(fs.exec('/opt/sbin/ip', [ '-6', '-j', 'route', 'show', 'table', 'all' ]), {}),
+			L.resolveDefault(fs.exec('/opt/sbin/ip', [ '-6', '-j', 'rule', 'show' ]), {}),
 			L.hasSystemFeature('ufpd') ? callUfpList() : null,
 		]);
 	},

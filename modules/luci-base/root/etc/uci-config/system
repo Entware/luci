@@ -1,0 +1,4 @@
+config system
+	option hostname 'Entware'
+	option timezone 'UTC'
+	option zonename 'UTC'

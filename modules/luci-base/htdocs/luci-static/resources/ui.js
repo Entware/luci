@@ -3095,7 +3095,7 @@ const UIFileUpload = UIElement.extend(/** @lends LuCI.ui.FileUpload.prototype */
 	 * @property {boolean} [enable_download=false]
 	 * Specifies whether the widget allows the user to download files.
 	 *
-	 * @property {string} [root_directory=/etc/luci-uploads]
+	 * @property {string} [root_directory=/opt/etc/luci-uploads]
 	 * Specifies the remote directory the upload and file browsing actions take
 	 * place in. Browsing to directories outside the root directory is
 	 * prevented by the widget. Note that this is not a security feature.
@@ -3112,7 +3112,7 @@ const UIFileUpload = UIElement.extend(/** @lends LuCI.ui.FileUpload.prototype */
 			enable_upload: true,
 			enable_remove: true,
 			enable_download: false,
-			root_directory: '/etc/luci-uploads'
+			root_directory: '/opt/etc/luci-uploads'
 		}, options);
 	},
 
@@ -5246,7 +5246,7 @@ const UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 				if (!this.changes.hasOwnProperty(config))
 					continue;
 
-				list.appendChild(E('h5', '# /etc/config/%s'.format(config)));
+				list.appendChild(E('h5', '# /opt/etc/uci-config/%s'.format(config)));
 
 				for (let i = 0, added = null; i < this.changes[config].length; i++) {
 					const chg = this.changes[config][i];
@@ -5313,7 +5313,7 @@ const UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 		 * @returns {Promise}
 		 */
 		checkConnectivityAffected() {
-			return L.resolveDefault(fs.exec_direct('/usr/libexec/luci-peeraddr', null, 'json')).then(L.bind((info) => {
+			return L.resolveDefault(fs.exec_direct('/opt/libexec/luci-peeraddr', null, 'json')).then(L.bind((info) => {
 				if (L.isObject(info) && Array.isArray(info.inbound_interfaces)) {
 					for (let i = 0; i < info.inbound_interfaces.length; i++) {
 						const iif = info.inbound_interfaces[i];

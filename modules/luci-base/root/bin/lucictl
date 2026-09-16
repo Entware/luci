@@ -1,0 +1,57 @@
+#!/bin/sh
+
+echo -e "\033[1;33mWarning: lucictl is a possibly temporary convenience wrapper and may be removed in a future luci-base release.\033[m" >&2
+
+help() {
+	echo "lucictl manages the LuCI stack (ubusd, rpcd, uhttpd) as one unit, in dependency order." >&2
+	echo "Usage: $0 {start|stop|restart|reconfigure|status}" >&2
+}
+
+start() {
+	/opt/etc/init.d/S05uci-defaults start
+	/opt/etc/init.d/S06luci-tmp-cleanup start
+	/opt/etc/init.d/S45ubusd start
+	/opt/etc/init.d/S50rpcd start
+	/opt/etc/init.d/S55uhttpd start
+}
+
+stop() {
+	/opt/etc/init.d/S55uhttpd stop
+	/opt/etc/init.d/S50rpcd stop
+	/opt/etc/init.d/S45ubusd stop
+}
+
+reconfigure() {
+	/opt/etc/init.d/S45ubusd reconfigure
+	/opt/etc/init.d/S50rpcd reconfigure
+	/opt/etc/init.d/S55uhttpd reconfigure
+}
+
+status() {
+	/opt/etc/init.d/S45ubusd check
+	/opt/etc/init.d/S50rpcd check
+	/opt/etc/init.d/S55uhttpd check
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		start
+		;;
+	reconfigure)
+		reconfigure
+		;;
+	status)
+		status
+		;;
+	*)
+		help
+		exit 1
+		;;
+esac

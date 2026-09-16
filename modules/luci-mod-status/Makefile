@@ -7,10 +7,10 @@
 include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI Status Pages
-LUCI_DEPENDS:=+luci-base +libiwinfo +rpcd-mod-iwinfo
+# No +libiwinfo +rpcd-mod-iwinfo: Entware can't manage Wi-Fi.
+LUCI_DEPENDS:=+luci-base
 
 PKG_RELEASE:=4
-PKG_BUILD_DEPENDS:=iwinfo
 PKG_LICENSE:=Apache-2.0
 
 include ../../luci.mk

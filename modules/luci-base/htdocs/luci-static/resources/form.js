@@ -5693,7 +5693,7 @@ const CBIFileUpload = CBIValue.extend(/** @lends LuCI.form.FileUpload.prototype 
 		this.enable_upload = true;
 		this.enable_remove = true;
 		this.enable_download = false;
-		this.root_directory = '/etc/luci-uploads';
+		this.root_directory = '/opt/etc/luci-uploads';
 	},
 
 
@@ -5803,12 +5803,12 @@ const CBIFileUpload = CBIValue.extend(/** @lends LuCI.form.FileUpload.prototype 
 	 * and directory listing permissions are controlled by the session ACL
 	 * rules.
 	 *
-	 * The default is `/etc/luci-uploads`.
+	 * The default is `/opt/etc/luci-uploads`.
 	 *
 	 * @memberof LuCI.form.FileUpload.prototype
 	 * @member root_directory
 	 * @type {string}
-	 * @default /etc/luci-uploads
+	 * @default /opt/etc/luci-uploads
 	 */
 
 	/**
@@ -6169,10 +6169,10 @@ const CBISectionValue = CBIValue.extend(/** @lends LuCI.form.SectionValue.protot
  * let m, s, o;
  *
  * m = new form.Map('example', _('Example form'),
- *	_('This is an example form mapping the contents of /etc/config/example'));
+ *	_('This is an example form mapping the contents of /opt/etc/uci-config/example'));
  *
  * s = m.section(form.NamedSection, 'first_section', 'example', _('The first section'),
- * 	_('This sections maps "config example first_section" of /etc/config/example'));
+ * 	_('This sections maps "config example first_section" of /opt/etc/uci-config/example'));
  *
  * o = s.option(form.Flag, 'some_bool', _('A checkbox option'));
  *

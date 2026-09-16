@@ -14,9 +14,9 @@ LUCI_SECTION?=luci
 LUCI_CATEGORY?=LuCI
 LUCI_URL?=https://github.com/openwrt/luci
 LUCI_MAINTAINER?=OpenWrt LuCI community
-LUCI_MINIFY_LUA?=1
-LUCI_MINIFY_CSS?=1
-LUCI_MINIFY_JS?=1
+LUCI_MINIFY_LUA?=0
+LUCI_MINIFY_CSS?=0
+LUCI_MINIFY_JS?=0
 
 #LUCI_LANG_START
 LUCI_LANG.ar=العربية (Arabic)
@@ -80,10 +80,10 @@ LUCI_LC_ALIAS.zh_Hans=zh-cn
 LUCI_LC_ALIAS.zh_Hant=zh-tw
 
 # Default locations
-HTDOCS = /www
-LUA_LIBRARYDIR = /usr/lib/lua
+HTDOCS = /opt/www
+LUA_LIBRARYDIR = /opt/lib/lua
 LUCI_LIBRARYDIR = $(LUA_LIBRARYDIR)/luci
-UCODE_LIBRARYDIR = /usr/share/ucode/luci
+UCODE_LIBRARYDIR = /opt/share/ucode/luci
 
 
 # 1: everything expect po subdir or only po subdir
@@ -114,7 +114,8 @@ endef
 PKG_NAME?=$(LUCI_NAME)
 PKG_RELEASE?=1
 PKG_INSTALL:=$(if $(realpath src/Makefile),1)
-PKG_BUILD_DEPENDS += lua/host luci-base/host LUCI_CSSTIDY:csstidy/host LUCI_SRCDIET:luasrcdiet/host $(LUCI_BUILD_DEPENDS)
+# SRCDIET needs lua/host (dropped, no-Lua fork); CSSTIDY's host package exists but isn't wired back in; JSMIN needs no deps, off just to match.
+PKG_BUILD_DEPENDS += luci-base/host $(LUCI_BUILD_DEPENDS)
 PKG_CONFIG_DEPENDS += CONFIG_LUCI_SRCDIET CONFIG_LUCI_JSMIN CONFIG_LUCI_CSSTIDY
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
@@ -224,8 +225,8 @@ define Package/$(PKG_NAME)/install
 	$(if $(CONFIG_LUCI_CSSTIDY),$(call CssTidy,$(1)$(HTDOCS)/),true)
  endif
  ifneq ($(wildcard ${CURDIR}/root),)
-	$(INSTALL_DIR) $(1)/
-	cp -pR $(PKG_BUILD_DIR)/root/* $(1)/
+	$(INSTALL_DIR) $(1)/opt
+	cp -pR $(PKG_BUILD_DIR)/root/* $(1)/opt/
  endif
  ifneq ($(wildcard ${CURDIR}/src),)
 	$(call Build/Install/Default)
@@ -235,10 +236,12 @@ endef
 
 ifndef Package/$(PKG_NAME)/postinst
 define Package/$(PKG_NAME)/postinst
+#!/bin/sh
 [ -n "$${IPKG_INSTROOT}" ] || { \
+	[ -f /opt/lib/config/uci.sh ] && { . /opt/lib/config/uci.sh; uci_apply_defaults; }
 	rm -f /tmp/luci-indexcache.*
 	rm -rf /tmp/luci-modulecache/
-	/etc/init.d/rpcd reload 2>/dev/null
+	/opt/etc/init.d/S50rpcd reconfigure 2>/dev/null
 	exit 0
 }
 endef
@@ -306,11 +309,11 @@ ifeq ($(PKG_NAME),luci-base)
 
    config LUCI_JSMIN
 	bool "Minify JavaScript sources"
-	default y
+	default n
 
    config LUCI_CSSTIDY
 	bool "Minify CSS files"
-	default y
+	default n
 
    menu "Translations"$(foreach lang,$(LUCI_LANGUAGES),$(if $(LUCI_LANG.$(lang)),
 
@@ -343,13 +346,19 @@ define LuciTranslation
   endef
 
   define Package/luci-i18n-$(LUCI_BASENAME)-$(1)/install
-	$$(INSTALL_DIR) $$(1)/etc/uci-defaults
+	$$(INSTALL_DIR) $$(1)/opt/etc/uci-defaults
 	echo "uci set luci.languages.$(subst -,_,$(1))='$(LUCI_LANG.$(2))'; uci commit luci" \
-		> $$(1)/etc/uci-defaults/luci-i18n-$(LUCI_BASENAME)-$(1)
+		> $$(1)/opt/etc/uci-defaults/luci-i18n-$(LUCI_BASENAME)-$(1)
 	$$(INSTALL_DIR) $$(1)$(LUCI_LIBRARYDIR)/i18n
 	$(foreach po,$(wildcard ${CURDIR}/po/$(2)/*.po), \
 		po2lmo $(po) \
 			$$(1)$(LUCI_LIBRARYDIR)/i18n/$(basename $(notdir $(po))).$(1).lmo;)
+  endef
+
+  define Package/luci-i18n-$(LUCI_BASENAME)-$(1)/postinst
+#!/bin/sh
+[ -n "$$$${IPKG_INSTROOT}" ] || { . /opt/lib/config/uci.sh; uci_apply_defaults; }
+exit 0
   endef
 
   LUCI_BUILD_PACKAGES += luci-i18n-$(LUCI_BASENAME)-$(1)

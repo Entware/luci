@@ -776,7 +776,7 @@ Network = baseclass.extend(/** @lends LuCI.network.prototype */ {
 	 *
 	 * @param {string} [netname=__dummy__]
 	 * The network name to use for the instantiated protocol. This should be
-	 * usually set to one of the interfaces described in /etc/config/network
+	 * usually set to one of the interfaces described in /opt/etc/uci-config/network
 	 * but it is allowed to omit it, e.g. to query protocol capabilities
 	 * without the need for an existing interface.
 	 *
@@ -1991,7 +1991,7 @@ Hosts = baseclass.extend(/** @lends LuCI.network.Hosts.prototype */ {
  *
  * The `Network.Protocol` class serves as the base for protocol-specific
  * subclasses which describe logical UCI networks defined by `config
- * interface` sections in `/etc/config/network`.
+ * interface` sections in `/opt/etc/config/network`.
  */
 Protocol = baseclass.extend(/** @lends LuCI.network.Protocol.prototype */ {
 	__init__(name) {

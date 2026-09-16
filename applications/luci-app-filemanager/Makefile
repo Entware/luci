@@ -6,7 +6,7 @@ LUCI_TITLE:=LuCI File Manager module
 LUCI_DEPENDS:=+luci-base
 
 PKG_LICENSE:=Apache-2.0
-PKG_MAINTAINER:=Dmitry R <rdmitry0911@gmail.com>
+PKG_MAINTAINER:=Entware team, https://entware.net
 
 include ../../luci.mk
 

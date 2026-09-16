@@ -40,7 +40,7 @@ msgstr "狗狗"
 msgid "Dynamic list option"
 msgstr "動態清單選項"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:3
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:3
 msgid "Example"
 msgstr "範例"
 
@@ -64,15 +64,15 @@ msgstr "第一個選項"
 msgid "Flag Option"
 msgstr "旗標選項"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:14
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:14
 msgid "Form View"
 msgstr "表單檢視"
 
-#: applications/luci-app-example/root/usr/share/rpcd/acl.d/luci-app-example.json:3
+#: applications/luci-app-example/root/share/rpcd/acl.d/luci-app-example.json:3
 msgid "Grant UCI and RPC access to LuCI app example"
 msgstr "授予 luci-app-example 存取 UCI 和 RPC 的權限"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:23
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:23
 msgid "HTML Page"
 msgstr "HTML 頁面"
 
@@ -126,15 +126,15 @@ msgstr "長尾小鸚鵡"
 msgid "Password Option"
 msgstr "密碼選項"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:32
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:32
 msgid "RPC Array Example"
 msgstr "RPC 陣列範例"
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:41
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:41
 msgid "RPC JSONMap Table Example"
 msgstr ""
 
-#: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:50
+#: applications/luci-app-example/root/share/luci/menu.d/luci-app-example.json:50
 msgid "RPC JSONMap Typed Example"
 msgstr ""
 

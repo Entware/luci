@@ -133,7 +133,7 @@ return view.extend({
 					if (Object.keys(service_cache).length > 0) return;
 
 					try {
-							const rawData = await fs.read('/etc/services');
+							const rawData = await fs.read('/opt/etc/services');
 							const lines = rawData.split('\n');
 
 							for (const line of lines) {

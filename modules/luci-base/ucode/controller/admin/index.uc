@@ -123,7 +123,7 @@ return {
 
 	action_translations: function(reqlang) {
 		if (reqlang != null && reqlang != dispatcher.lang) {
-			load_catalog(reqlang, '/usr/lib/lua/luci/i18n');
+			load_catalog(reqlang, '/opt/lib/lua/luci/i18n');
 			change_catalog(reqlang);
 		}
 

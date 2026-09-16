@@ -15,7 +15,7 @@ return view.extend({
 	load() {
 		return Promise.all([
 			callLeds(),
-			L.resolveDefault(fs.list('/www' + L.resource('view/system/led-trigger')), [])
+			L.resolveDefault(fs.list('/opt/www' + L.resource('view/system/led-trigger')), [])
 		]).then(function([leds, plugins]) {
 			const tasks = [];
 

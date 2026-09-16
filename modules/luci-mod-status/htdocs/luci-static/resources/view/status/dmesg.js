@@ -36,10 +36,11 @@ return view.extend({
 	],
 
 	async retrieveLog() {
-		return fs.exec_direct('/bin/dmesg', [ '-r' ]).then(logdata => {
+		return fs.exec_direct('/opt/bin/dmesg', [ '-r' ]).then(logdata => {
 			let loglines = [];
 			let lastSeverity = null;
 			let lastTime = null;
+			let hasAnyTime = false;
 
 			logdata.trim().split(/\n/).forEach(line => {
 				const priorityMatch = line.match(/^<(\w+)>/);
@@ -50,8 +51,10 @@ return view.extend({
 				const cleanLine = line.replace(/^<\w+>/, '');
 				const timeMatch = cleanLine.match(/^\[\s*(\d+(?:\.\d+)?)\]/);
 				const time = timeMatch ? parseFloat(timeMatch[1]) : null;
-				if (time != null)
+				if (time != null) {
 					lastTime = time;
+					hasAnyTime = true;
+				}
 
 				if (!isCont) {
 					lastSeverity = parseInt(tag, 10); // update severity
@@ -69,7 +72,7 @@ return view.extend({
 			const hasStart = this.logFilterFrom;
 			const hasEnd = this.logFilterTo;
 
-			if (hasStart || hasEnd) {
+			if (hasAnyTime && (hasStart || hasEnd)) {
 				loglines = loglines.filter(({ time }) => {
 					if (time == null) return false;
 

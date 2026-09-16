@@ -8,23 +8,23 @@ In all cases, you'll want to log out of the web interface and back in to force a
 
 ### From git
 
-To install the luci-app-example to your OpenWrt instance (assuming your OpenWRT instance is on 192.168.1.1):
+To install the luci-app-example to your Entware instance (assuming your Entware instance is on 192.168.1.1):
 
 ```sh
-scp -r root/* root@192.168.1.1:/
-scp -r htdocs/* root@192.168.1.1:/www/
-# execute the UCI defaults script to create the /etc/config/example
-ssh root@192.168.1.1 "sh /etc/uci-defaults/80_example"
+scp -r root/* root@192.168.1.1:/opt/
+scp -r htdocs/* root@192.168.1.1:/opt/www/
+# execute the UCI defaults script to create the /opt/etc/uci-config/example
+ssh root@192.168.1.1 "sh /opt/etc/uci-defaults/80_example"
 ```
 
 ### From packages
 
-Install the app on your OpenWrt installation. This can be an actual router/device, or something like a QEMU virtual machine.
+Install the app on your Entware installation. This can be an actual router/device, or something like a Docker container running Entware.
 
-`apk add luci-app-example`
+`opkg install luci-app-example`
 
 Visit the web UI for the device/virtual machine where the package was installed.
-Log in to OpenWrt, and **Example** should be present in the navigation menu.
+Log in to Entware, and **Example** should be present in the navigation menu.
 
 ## Application structure
 
@@ -46,15 +46,15 @@ You can either do direct editing on the device/virtual machine, or use something
 By default, the code is minified by the build process, which makes editing it non-trivial.
 You can either change the build process, or just copy the file content from the git repository and replace the content on disk.
 
-Javascript code can be found on the device/virtual machine in `/www/luci-static/resources/view/example/`.
+Javascript code can be found on the device/virtual machine in `/opt/www/luci-static/resources/view/example/`.
 
 ### [form.js](./htdocs/luci-static/resources/view/example/form.js)
 
 This is a JS view that uses the **form.Map** approach to providing a form that can change the configuration.
-It relies on UCI access, and the relevant ACL declarations are in `root/usr/share/rpcd/acl.d/luci-app-example.json`.
+It relies on UCI access, and the relevant ACL declarations are in `root/share/rpcd/acl.d/luci-app-example.json`.
 
 The declarations are `luci-app-example > read > uci` and `luci-app-example > write > uci`.
-Note that for both permissions, the node name "example" is provided as a list argument to the interface type (**uci**); this maps to `/etc/config/example`.
+Note that for both permissions, the node name "example" is provided as a list argument to the interface type (**uci**); this maps to `/opt/etc/uci-config/example`.
 
 Since form.Map and form.JSONMap create Promises, you cannot embed them inside a `E()`-built structure.
 
@@ -74,20 +74,20 @@ The signature for `E()` is `E(node_type, {node attributes}, [child nodes])`.
 The RPC JS page is read-only, and demonstrates using RPC calls to get data.
 It also demonstrates using the JSONMap form object for mapping a configuration to a form, but makes the form read-only for display purposes.
 
-The configuration is stored in `/etc/config/example`.
-The file must exist and created on device boot by UCI defaults script in `/root/etc/uci-defaults/80_example`.
+The configuration is stored in `/opt/etc/uci-config/example`.
+The file must exist and created on install by the UCI defaults script in `root/etc/uci-defaults/80_example`.
 The [developer guide](https://openwrt.org/docs/guide-developer/uci-defaults) has more details about UCI defaults.
 
-The RPCd script is stored as `/usr/libexec/rpcd/luci.example`, and can be called via ubus.
+The RPCd script is stored as `/opt/share/rpcd/ucode/example.uc`, and can be called via ubus.
 
-It relies on RPC access, and the relevant ACL declarations are in `root/usr/share/rpcd/acl.d/luci-app-example.json`.
+It relies on RPC access, and the relevant ACL declarations are in `root/share/rpcd/acl.d/luci-app-example.json`.
 
 The declaration is `luci-app-example > read > ubus > luci.example`; the list of names under this key is the list of APIs that can be called.
 
 ## ACLs
 
 ACLs are global for the entire web UI - the declaration of **luci-app-example** in a file called `acl.d/luci-app-example` is just a naming convention.
-Nothing enforces that only the code in **luci-app-example** is mutating `/etc/config/example`.
+Nothing enforces that only the code in **luci-app-example** is mutating `/opt/etc/uci-config/example`.
 Once the ACL is defined to allow reads/writes to a UCI node, any code running from the web UI can make changes to that node.
 
 ## YAML

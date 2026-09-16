@@ -5,8 +5,8 @@
 'require ui';
 'require view';
 
-const APK_DIR = '/etc/apk/keys/';
-const OPKG_DIR = '/etc/opkg/keys/';
+const APK_DIR = '/opt/etc/apk/keys/';
+const OPKG_DIR = '/opt/etc/opkg/keys/';
 const isReadonlyView = !L.hasViewPermission() || null;
 
 let KEYDIR = null;

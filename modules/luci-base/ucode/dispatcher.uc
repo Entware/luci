@@ -107,7 +107,7 @@ function determine_request_language() {
 	else
 		lang = replace(lang, '_', '-');
 
-	if (load_catalog(lang, '/usr/lib/lua/luci/i18n'))
+	if (load_catalog(lang, '/opt/lib/lua/luci/i18n'))
 		change_catalog(lang);
 
 	return lang;
@@ -116,7 +116,7 @@ function determine_request_language() {
 function determine_version() {
 	let res = { luciname, luciversion };
 
-	for (let f = open("/etc/os-release"), l = f?.read?.("line"); l; l = f.read?.("line")) {
+	for (let f = open("/opt/etc/entware_release"), l = f?.read?.("line"); l; l = f.read?.("line")) {
 		let kv = split(l, '=', 2);
 
 		switch (kv[0]) {
@@ -132,7 +132,7 @@ function determine_version() {
 			res.disturl = trim(kv[1], '"\' \n');
 			break;
 
-		case 'BUILD_ID':
+		case 'VERSION_ID':
 			res.distrevision = trim(kv[1], '"\' \n');
 			break;
 		}
@@ -360,7 +360,7 @@ function build_pagetree() {
 		firstchild_ineligible: 'bool'
 	};
 
-	let files = glob('/usr/share/luci/menu.d/*.json', '/usr/lib/lua/luci/controller/*.lua', '/usr/lib/lua/luci/controller/*/*.lua');
+	let files = glob('/opt/share/luci/menu.d/*.json', '/opt/lib/lua/luci/controller/*.lua', '/opt/lib/lua/luci/controller/*/*.lua');
 	let cachefile;
 
 	if (indexcache) {

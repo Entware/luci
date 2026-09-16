@@ -61,7 +61,7 @@
 	<div class="fill">
 		<div class="container">
 			<span class="showSide"></span>
-			<a id="logo" href="{{ ctx.authsession ? dispatcher.build_url('admin/status/overview') : '#' }}"><img src="{{ media }}/brand.png" alt="OpenWrt"></a>
+			<a id="logo" href="{{ ctx.authsession ? dispatcher.build_url('admin/status/overview') : '#' }}"><img src="{{ media }}/brand.svg" alt="Entware"></a>
 			<a class="brand" href="#">{{ striptags(`${boardinfo.hostname ?? '?'}`) }}</a>
 			<span class="status" id="indicators"></span>
 		</div>

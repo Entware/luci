@@ -6,15 +6,15 @@
 'require ui';
 'require view';
 
-// const plugins_path = '/usr/share/ucode/luci/plugins';
-const view_plugins = `/www/${L.resource('view/plugins')}`;
+// const plugins_path = '/opt/share/ucode/luci/plugins';
+const view_plugins = `/opt/www/${L.resource('view/plugins')}`;
 
 const luci_plugins = 'luci_plugins';
 
 return view.extend({
 	load() {
 		return Promise.all([
-			L.resolveDefault(fs.list(`/www/${L.resource('view/plugins')}`), []).then((entries) => {
+			L.resolveDefault(fs.list(`/opt/www/${L.resource('view/plugins')}`), []).then((entries) => {
 				return Promise.all(entries.filter((e) => {
 					return (e.type == 'file' && e.name.match(/\.js$/));
 				}).map((e) => {
